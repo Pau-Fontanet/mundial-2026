@@ -1,0 +1,105 @@
+﻿partit_id,data,hora_es,fase,equip1,equip2,gol1,gol2
+1,2026-06-11,21:00,Fase de grups,Mexico,South Africa,0,1
+2,2026-06-12,04:00,Fase de grups,South Korea,Czech Republic,2,1
+3,2026-06-12,21:00,Fase de grups,Canada,Bosnia & Herzegovina,1,1
+4,2026-06-13,03:00,Fase de grups,USA,Paraguay,2,2
+5,2026-06-13,21:00,Fase de grups,Qatar,Switzerland,1,3
+6,2026-06-14,00:00,Fase de grups,Brazil,Morocco,2,1
+7,2026-06-14,03:00,Fase de grups,Haiti,Scotland,0,0
+8,2026-06-14,06:00,Fase de grups,Australia,Turkey,0,2
+9,2026-06-14,19:00,Fase de grups,Germany,Curaçao,3,0
+10,2026-06-14,22:00,Fase de grups,Netherlands,Japan,2,1
+11,2026-06-15,01:00,Fase de grups,Ivory Coast,Ecuador,1,3
+12,2026-06-15,04:00,Fase de grups,Sweden,Tunisia,2,0
+13,2026-06-15,18:00,Fase de grups,Spain,Cape Verde,5,1
+14,2026-06-15,21:00,Fase de grups,Belgium,Egypt,2,1
+15,2026-06-16,00:00,Fase de grups,Saudi Arabia,Uruguay,0,3
+16,2026-06-16,03:00,Fase de grups,Iran,New Zealand,2,1
+17,2026-06-16,21:00,Fase de grups,France,Senegal,3,1
+18,2026-06-17,00:00,Fase de grups,Iraq,Norway,1,6
+19,2026-06-17,03:00,Fase de grups,Argentina,Algeria,2,0
+20,2026-06-17,06:00,Fase de grups,Austria,Jordan,1,0
+21,2026-06-17,19:00,Fase de grups,Portugal,DR Congo,5,2
+22,2026-06-17,22:00,Fase de grups,England,Croatia,2,0
+23,2026-06-18,01:00,Fase de grups,Ghana,Panama,1,0
+24,2026-06-18,04:00,Fase de grups,Uzbekistan,Colombia,0,3
+25,2026-06-18,18:00,Fase de grups,Czech Republic,South Africa,0,2
+26,2026-06-18,21:00,Fase de grups,Switzerland,Bosnia & Herzegovina,2,1
+27,2026-06-19,00:00,Fase de grups,Canada,Qatar,2,0
+28,2026-06-19,03:00,Fase de grups,Mexico,South Korea,1,1
+29,2026-06-19,21:00,Fase de grups,USA,Australia,2,1
+30,2026-06-20,00:00,Fase de grups,Scotland,Morocco,1,4
+31,2026-06-20,02:30,Fase de grups,Brazil,Haiti,5,0
+32,2026-06-20,05:00,Fase de grups,Turkey,Paraguay,3,1
+33,2026-06-20,19:00,Fase de grups,Netherlands,Sweden,0,0
+34,2026-06-20,22:00,Fase de grups,Germany,Ivory Coast,2,0
+35,2026-06-21,02:00,Fase de grups,Ecuador,Curaçao,3,0
+36,2026-06-21,06:00,Fase de grups,Tunisia,Japan,0,2
+37,2026-06-21,18:00,Fase de grups,Spain,Saudi Arabia,2,0
+38,2026-06-21,21:00,Fase de grups,Belgium,Iran,4,0
+39,2026-06-22,00:00,Fase de grups,Uruguay,Cape Verde,2,1
+40,2026-06-22,03:00,Fase de grups,New Zealand,Egypt,0,3
+41,2026-06-22,19:00,Fase de grups,Argentina,Austria,1,0
+42,2026-06-22,23:00,Fase de grups,France,Iraq,3,0
+43,2026-06-23,02:00,Fase de grups,Norway,Senegal,2,2
+44,2026-06-23,05:00,Fase de grups,Jordan,Algeria,0,1
+45,2026-06-23,19:00,Fase de grups,Portugal,Uzbekistan,4,0
+46,2026-06-23,22:00,Fase de grups,England,Ghana,2,2
+47,2026-06-24,01:00,Fase de grups,Panama,Croatia,1,1
+48,2026-06-24,04:00,Fase de grups,Colombia,DR Congo,3,0
+49,2026-06-24,21:00,Fase de grups,Switzerland,Canada,2,2
+50,2026-06-24,21:00,Fase de grups,Bosnia & Herzegovina,Qatar,3,1
+51,2026-06-25,00:00,Fase de grups,Scotland,Brazil,1,3
+52,2026-06-25,00:00,Fase de grups,Morocco,Haiti,4,1
+53,2026-06-25,03:00,Fase de grups,Czech Republic,Mexico,0,2
+54,2026-06-25,03:00,Fase de grups,South Africa,South Korea,1,2
+55,2026-06-25,22:00,Fase de grups,Curaçao,Ivory Coast,1,2
+56,2026-06-25,22:00,Fase de grups,Ecuador,Germany,2,3
+57,2026-06-26,01:00,Fase de grups,Japan,Sweden,2,2
+58,2026-06-26,01:00,Fase de grups,Tunisia,Netherlands,1,3
+59,2026-06-26,04:00,Fase de grups,Turkey,USA,3,1
+60,2026-06-26,04:00,Fase de grups,Paraguay,Australia,1,1
+61,2026-06-26,21:00,Fase de grups,Norway,France,0,2
+62,2026-06-26,21:00,Fase de grups,Senegal,Iraq,2,0
+63,2026-06-27,02:00,Fase de grups,Cape Verde,Saudi Arabia,3,2
+64,2026-06-27,02:00,Fase de grups,Uruguay,Spain,2,3
+65,2026-06-27,05:00,Fase de grups,Egypt,Iran,1,0
+66,2026-06-27,05:00,Fase de grups,New Zealand,Belgium,0,3
+67,2026-06-27,23:00,Fase de grups,Panama,England,0,2
+68,2026-06-27,23:00,Fase de grups,Croatia,Ghana,2,0
+69,2026-06-28,01:30,Fase de grups,Colombia,Portugal,1,2
+70,2026-06-28,01:30,Fase de grups,DR Congo,Uzbekistan,2,2
+71,2026-06-28,04:00,Fase de grups,Algeria,Austria,2,3
+72,2026-06-28,04:00,Fase de grups,Jordan,Argentina,1,4
+73,2026-06-28,21:00,Setzens de final,2A,2B,,
+74,2026-06-29,19:00,Setzens de final,1C,2F,,
+75,2026-06-29,22:30,Setzens de final,1E,3A/B/C/D/F,,
+76,2026-06-30,03:00,Setzens de final,1F,2C,,
+77,2026-06-30,19:00,Setzens de final,2E,2I,,
+78,2026-06-30,23:00,Setzens de final,1I,3C/D/F/G/H,,
+79,2026-07-01,03:00,Setzens de final,1A,3C/E/F/H/I,,
+80,2026-07-01,18:00,Setzens de final,1L,3E/H/I/J/K,,
+81,2026-07-01,22:00,Setzens de final,1G,3A/E/H/I/J,,
+82,2026-07-02,02:00,Setzens de final,1D,3B/E/F/I/J,,
+83,2026-07-02,21:00,Setzens de final,1H,2J,,
+84,2026-07-03,01:00,Setzens de final,2K,2L,,
+85,2026-07-03,05:00,Setzens de final,1B,3E/F/G/I/J,,
+86,2026-07-03,20:00,Setzens de final,2D,2G,,
+87,2026-07-04,00:00,Setzens de final,1J,2H,,
+88,2026-07-04,03:30,Setzens de final,1K,3D/E/I/J/L,,
+89,2026-07-04,19:00,Vuitens de final,W73,W75,,
+90,2026-07-04,23:00,Vuitens de final,W74,W77,,
+91,2026-07-05,22:00,Vuitens de final,W76,W78,,
+92,2026-07-06,02:00,Vuitens de final,W79,W80,,
+93,2026-07-06,21:00,Vuitens de final,W83,W84,,
+94,2026-07-07,02:00,Vuitens de final,W81,W82,,
+95,2026-07-07,18:00,Vuitens de final,W86,W88,,
+96,2026-07-07,22:00,Vuitens de final,W85,W87,,
+97,2026-07-09,22:00,Quarts de final,W89,W90,,
+98,2026-07-10,21:00,Quarts de final,W93,W94,,
+99,2026-07-11,23:00,Quarts de final,W91,W92,,
+100,2026-07-12,03:00,Quarts de final,W95,W96,,
+101,2026-07-14,21:00,Semifinals,W97,W98,,
+102,2026-07-15,21:00,Semifinals,W99,W100,,
+103,2026-07-18,23:00,3r i 4t lloc,L101,L102,,
+104,2026-07-19,21:00,Final,W101,W102,,

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Porra Mundial 2026</title>
+<style>
+  :root{
+    --bg:#0f1320; --card:#1a2032; --card2:#222a40; --line:#2c3550;
+    --txt:#e9edf6; --muted:#97a1bd; --accent:#3ddc97; --accent2:#ffd166;
+    --gold:#ffd166; --green:#2ecc71; --yellow:#f1c40f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(160deg,#0d1019,#141a2b);color:var(--txt);
+       font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+  header{padding:28px 20px 10px;text-align:center}
+  h1{margin:0;font-size:30px;letter-spacing:.5px}
+  h1 .ball{filter:drop-shadow(0 0 8px #ffd16688)}
+  .sub{color:var(--muted);margin-top:6px;font-size:14px}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 16px 60px}
+  .tabs{display:flex;gap:8px;justify-content:center;margin:22px 0 8px;flex-wrap:wrap}
+  .tab{background:var(--card);border:1px solid var(--line);color:var(--txt);
+       padding:10px 18px;border-radius:999px;cursor:pointer;font-size:15px;transition:.15s}
+  .tab:hover{border-color:var(--accent)}
+  .tab.active{background:var(--accent);color:#06281c;font-weight:700;border-color:var(--accent)}
+  .panel{display:none;animation:fade .25s}
+  .panel.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+        padding:16px 18px;margin:16px 0;box-shadow:0 8px 30px #0006}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  tr:last-child td{border-bottom:none}
+  .num{text-align:right;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
+  .total{font-size:17px;font-weight:800;color:var(--accent)}
+  .rank{width:38px;text-align:center;font-weight:800;color:var(--muted)}
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 2px}
+  select,.toggle{background:var(--card2);color:var(--txt);border:1px solid var(--line);
+         border-radius:10px;padding:9px 12px;font-size:14px;cursor:pointer}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px}
+  .grp h3{margin:0 0 10px;font-size:16px;display:flex;align-items:center;gap:8px}
+  .grp table{font-size:13px}
+  .flag{font-size:16px}
+  .real{background:#1d2a22}
+  .ok{background:#16331f;color:#9cf2b9;font-weight:700}
+  .ok-pos{outline:2px solid var(--green);outline-offset:-2px}
+  .badge3{background:var(--green);color:#04210f;padding:1px 7px;border-radius:6px;font-size:11px;font-weight:800}
+  .grups-stack{display:flex;flex-direction:column;gap:18px}
+  .grp.wide h3{margin:0 0 12px;font-size:18px}
+  .tscroll{overflow-x:auto}
+  .gtbl{font-size:13px}
+  .gtbl th.jcol,.gtbl td.jcol{text-align:center;width:48px;white-space:nowrap}
+  .gtbl th.tcol{min-width:200px}
+  .gtbl td.tcol{white-space:nowrap;font-weight:600}
+  .gtbl tbody tr:hover{background:#222a4055}
+  .pos{display:inline-block;width:20px;text-align:center;color:var(--muted);font-weight:800;margin-right:2px}
+  .tstat{color:var(--muted);font-weight:500;font-size:11px;margin-left:8px}
+  .medal{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;
+         border-radius:50%;font-weight:800;font-size:13px;vertical-align:middle}
+  .m1{background:linear-gradient(135deg,#ffe27a,#f0b90b);color:#3a2c00}
+  .m2{background:linear-gradient(135deg,#eef2f6,#a9b4bf);color:#2a2f36}
+  .m3{background:linear-gradient(135deg,#e3a868,#b87333);color:#2a1500}
+  .m4{background:transparent;border:1px dashed var(--line);color:var(--muted);font-weight:600}
+  .medal.ring{box-shadow:0 0 0 2px var(--green)}
+  .live{font-size:11px;font-weight:700;padding:1px 9px;border-radius:999px;background:var(--card2);
+        color:var(--muted);border:1px solid var(--line);vertical-align:middle}
+  .live.done{color:#9cf2b9;border-color:#2ecc71}
+  .live.play{color:#ffe28a;border-color:#f1c40f}
+  .muted{color:var(--muted)}
+  .sc-exact{background:#16331f;color:#9cf2b9;font-weight:700}
+  .sc-win{background:#3a3413;color:#ffe28a;font-weight:700}
+  .sc-zero{color:var(--muted)}
+  .empty{text-align:center;color:var(--muted);padding:40px 10px}
+  .fase-h{margin:18px 0 6px;color:var(--accent2);font-size:14px;font-weight:700;
+          text-transform:uppercase;letter-spacing:.5px}
+  .legend{font-size:12px;color:var(--muted);margin-top:8px}
+  .legend span{display:inline-block;margin-right:14px}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:4px}
+  .stat{display:inline-flex;flex-direction:column;align-items:center;background:var(--card2);
+        border:1px solid var(--line);border-radius:12px;padding:8px 16px;margin:4px}
+  .stat b{font-size:20px;color:var(--accent)}
+  .stat small{color:var(--muted)}
+  .stats{display:flex;justify-content:center;flex-wrap:wrap;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="ball">⚽</span> Porra Mundial 2026</h1>
+  <div class="sub">11 juny – 19 juliol · prediccions i classificació entre amics</div>
+  <div class="stats" id="stats"></div>
+</header>
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" data-tab="classificacio">🏆 Classificació</button>
+    <button class="tab" data-tab="grups">📊 Grups</button>
+    <button class="tab" data-tab="partits">⚽ Partits</button>
+  </div>
+  <div class="panel active" id="classificacio"></div>
+  <div class="panel" id="grups"></div>
+  <div class="panel" id="partits"></div>
+</div>
+
+<script>
+const DATA = {"partits": [{"id": 1, "fase": "Fase de grups", "grup": "Group A", "data": "2026-06-11", "hora": "21:00", "equip1": "Mexico", "equip2": "South Africa", "seu": "Mexico City"}, {"id": 2, "fase": "Fase de grups", "grup": "Group A", "data": "2026-06-12", "hora": "04:00", "equip1": "South Korea", "equip2": "Czech Republic", "seu": "Guadalajara (Zapopan)"}, {"id": 3, "fase": "Fase de grups", "grup": "Group B", "data": "2026-06-12", "hora": "21:00", "equip1": "Canada", "equip2": "Bosnia & Herzegovina", "seu": "Toronto"}, {"id": 4, "fase": "Fase de grups", "grup": "Group D", "data": "2026-06-13", "hora": "03:00", "equip1": "USA", "equip2": "Paraguay", "seu": "Los Angeles (Inglewood)"}, {"id": 5, "fase": "Fase de grups", "grup": "Group B", "data": "2026-06-13", "hora": "21:00", "equip1": "Qatar", "equip2": "Switzerland", "seu": "San Francisco Bay Area (Santa Clara)"}, {"id": 6, "fase": "Fase de grups", "grup": "Group C", "data": "2026-06-14", "hora": "00:00", "equip1": "Brazil", "equip2": "Morocco", "seu": "New York/New Jersey (East Rutherford)"}, {"id": 7, "fase": "Fase de grups", "grup": "Group C", "data": "2026-06-14", "hora": "03:00", "equip1": "Haiti", "equip2": "Scotland", "seu": "Boston (Foxborough)"}, {"id": 8, "fase": "Fase de grups", "grup": "Group D", "data": "2026-06-14", "hora": "06:00", "equip1": "Australia", "equip2": "Turkey", "seu": "Vancouver"}, {"id": 9, "fase": "Fase de grups", "grup": "Group E", "data": "2026-06-14", "hora": "19:00", "equip1": "Germany", "equip2": "Curaçao", "seu": "Houston"}, {"id": 10, "fase": "Fase de grups", "grup": "Group F", "data": "2026-06-14", "hora": "22:00", "equip1": "Netherlands", "equip2": "Japan", "seu": "Dallas (Arlington)"}, {"id": 11, "fase": "Fase de grups", "grup": "Group E", "data": "2026-06-15", "hora": "01:00", "equip1": "Ivory Coast", "equip2": "Ecuador", "seu": "Philadelphia"}, {"id": 12, "fase": "Fase de grups", "grup": "Group F", "data": "2026-06-15", "hora": "04:00", "equip1": "Sweden", "equip2": "Tunisia", "seu": "Monterrey (Guadalupe)"}, {"id": 13, "fase": "Fase de grups", "grup": "Group H", "data": "2026-06-15", "hora": "18:00", "equip1": "Spain", "equip2": "Cape Verde", "seu": "Atlanta"}, {"id": 14, "fase": "Fase de grups", "grup": "Group G", "data": "2026-06-15", "hora": "21:00", "equip1": "Belgium", "equip2": "Egypt", "seu": "Seattle"}, {"id": 15, "fase": "Fase de grups", "grup": "Group H", "data": "2026-06-16", "hora": "00:00", "equip1": "Saudi Arabia", "equip2": "Uruguay", "seu": "Miami (Miami Gardens)"}, {"id": 16, "fase": "Fase de grups", "grup": "Group G", "data": "2026-06-16", "hora": "03:00", "equip1": "Iran", "equip2": "New Zealand", "seu": "Los Angeles (Inglewood)"}, {"id": 17, "fase": "Fase de grups", "grup": "Group I", "data": "2026-06-16", "hora": "21:00", "equip1": "France", "equip2": "Senegal", "seu": "New York/New Jersey (East Rutherford)"}, {"id": 18, "fase": "Fase de grups", "grup": "Group I", "data": "2026-06-17", "hora": "00:00", "equip1": "Iraq", "equip2": "Norway", "seu": "Boston (Foxborough)"}, {"id": 19, "fase": "Fase de grups", "grup": "Group J", "data": "2026-06-17", "hora": "03:00", "equip1": "Argentina", "equip2": "Algeria", "seu": "Kansas City"}, {"id": 20, "fase": "Fase de grups", "grup": "Group J", "data": "2026-06-17", "hora": "06:00", "equip1": "Austria", "equip2": "Jordan", "seu": "San Francisco Bay Area (Santa Clara)"}, {"id": 21, "fase": "Fase de grups", "grup": "Group K", "data": "2026-06-17", "hora": "19:00", "equip1": "Portugal", "equip2": "DR Congo", "seu": "Houston"}, {"id": 22, "fase": "Fase de grups", "grup": "Group L", "data": "2026-06-17", "hora": "22:00", "equip1": "England", "equip2": "Croatia", "seu": "Dallas (Arlington)"}, {"id": 23, "fase": "Fase de grups", "grup": "Group L", "data": "2026-06-18", "hora": "01:00", "equip1": "Ghana", "equip2": "Panama", "seu": "Toronto"}, {"id": 24, "fase": "Fase de grups", "grup": "Group K", "data": "2026-06-18", "hora": "04:00", "equip1": "Uzbekistan", "equip2": "Colombia", "seu": "Mexico City"}, {"id": 25, "fase": "Fase de grups", "grup": "Group A", "data": "2026-06-18", "hora": "18:00", "equip1": "Czech Republic", "equip2": "South Africa", "seu": "Atlanta"}, {"id": 26, "fase": "Fase de grups", "grup": "Group B", "data": "2026-06-18", "hora": "21:00", "equip1": "Switzerland", "equip2": "Bosnia & Herzegovina", "seu": "Los Angeles (Inglewood)"}, {"id": 27, "fase": "Fase de grups", "grup": "Group B", "data": "2026-06-19", "hora": "00:00", "equip1": "Canada", "equip2": "Qatar", "seu": "Vancouver"}, {"id": 28, "fase": "Fase de grups", "grup": "Group A", "data": "2026-06-19", "hora": "03:00", "equip1": "Mexico", "equip2": "South Korea", "seu": "Guadalajara (Zapopan)"}, {"id": 29, "fase": "Fase de grups", "grup": "Group D", "data": "2026-06-19", "hora": "21:00", "equip1": "USA", "equip2": "Australia", "seu": "Seattle"}, {"id": 30, "fase": "Fase de grups", "grup": "Group C", "data": "2026-06-20", "hora": "00:00", "equip1": "Scotland", "equip2": "Morocco", "seu": "Boston (Foxborough)"}, {"id": 31, "fase": "Fase de grups", "grup": "Group C", "data": "2026-06-20", "hora": "02:30", "equip1": "Brazil", "equip2": "Haiti", "seu": "Philadelphia"}, {"id": 32, "fase": "Fase de grups", "grup": "Group D", "data": "2026-06-20", "hora": "05:00", "equip1": "Turkey", "equip2": "Paraguay", "seu": "San Francisco Bay Area (Santa Clara)"}, {"id": 33, "fase": "Fase de grups", "grup": "Group F", "data": "2026-06-20", "hora": "19:00", "equip1": "Netherlands", "equip2": "Sweden", "seu": "Houston"}, {"id": 34, "fase": "Fase de grups", "grup": "Group E", "data": "2026-06-20", "hora": "22:00", "equip1": "Germany", "equip2": "Ivory Coast", "seu": "Toronto"}, {"id": 35, "fase": "Fase de grups", "grup": "Group E", "data": "2026-06-21", "hora": "02:00", "equip1": "Ecuador", "equip2": "Curaçao", "seu": "Kansas City"}, {"id": 36, "fase": "Fase de grups", "grup": "Group F", "data": "2026-06-21", "hora": "06:00", "equip1": "Tunisia", "equip2": "Japan", "seu": "Monterrey (Guadalupe)"}, {"id": 37, "fase": "Fase de grups", "grup": "Group H", "data": "2026-06-21", "hora": "18:00", "equip1": "Spain", "equip2": "Saudi Arabia", "seu": "Atlanta"}, {"id": 38, "fase": "Fase de grups", "grup": "Group G", "data": "2026-06-21", "hora": "21:00", "equip1": "Belgium", "equip2": "Iran", "seu": "Los Angeles (Inglewood)"}, {"id": 39, "fase": "Fase de grups", "grup": "Group H", "data": "2026-06-22", "hora": "00:00", "equip1": "Uruguay", "equip2": "Cape Verde", "seu": "Miami (Miami Gardens)"}, {"id": 40, "fase": "Fase de grups", "grup": "Group G", "data": "2026-06-22", "hora": "03:00", "equip1": "New Zealand", "equip2": "Egypt", "seu": "Vancouver"}, {"id": 41, "fase": "Fase de grups", "grup": "Group J", "data": "2026-06-22", "hora": "19:00", "equip1": "Argentina", "equip2": "Austria", "seu": "Dallas (Arlington)"}, {"id": 42, "fase": "Fase de grups", "grup": "Group I", "data": "2026-06-22", "hora": "23:00", "equip1": "France", "equip2": "Iraq", "seu": "Philadelphia"}, {"id": 43, "fase": "Fase de grups", "grup": "Group I", "data": "2026-06-23", "hora": "02:00", "equip1": "Norway", "equip2": "Senegal", "seu": "New York/New Jersey (East Rutherford)"}, {"id": 44, "fase": "Fase de grups", "grup": "Group J", "data": "2026-06-23", "hora": "05:00", "equip1": "Jordan", "equip2": "Algeria", "seu": "San Francisco Bay Area (Santa Clara)"}, {"id": 45, "fase": "Fase de grups", "grup": "Group K", "data": "2026-06-23", "hora": "19:00", "equip1": "Portugal", "equip2": "Uzbekistan", "seu": "Houston"}, {"id": 46, "fase": "Fase de grups", "grup": "Group L", "data": "2026-06-23", "hora": "22:00", "equip1": "England", "equip2": "Ghana", "seu": "Boston (Foxborough)"}, {"id": 47, "fase": "Fase de grups", "grup": "Group L", "data": "2026-06-24", "hora": "01:00", "equip1": "Panama", "equip2": "Croatia", "seu": "Toronto"}, {"id": 48, "fase": "Fase de grups", "grup": "Group K", "data": "2026-06-24", "hora": "04:00", "equip1": "Colombia", "equip2": "DR Congo", "seu": "Guadalajara (Zapopan)"}, {"id": 49, "fase": "Fase de grups", "grup": "Group B", "data": "2026-06-24", "hora": "21:00", "equip1": "Switzerland", "equip2": "Canada", "seu": "Vancouver"}, {"id": 50, "fase": "Fase de grups", "grup": "Group B", "data": "2026-06-24", "hora": "21:00", "equip1": "Bosnia & Herzegovina", "equip2": "Qatar", "seu": "Seattle"}, {"id": 51, "fase": "Fase de grups", "grup": "Group C", "data": "2026-06-25", "hora": "00:00", "equip1": "Scotland", "equip2": "Brazil", "seu": "Miami (Miami Gardens)"}, {"id": 52, "fase": "Fase de grups", "grup": "Group C", "data": "2026-06-25", "hora": "00:00", "equip1": "Morocco", "equip2": "Haiti", "seu": "Atlanta"}, {"id": 53, "fase": "Fase de grups", "grup": "Group A", "data": "2026-06-25", "hora": "03:00", "equip1": "Czech Republic", "equip2": "Mexico", "seu": "Mexico City"}, {"id": 54, "fase": "Fase de grups", "grup": "Group A", "data": "2026-06-25", "hora": "03:00", "equip1": "South Africa", "equip2": "South Korea", "seu": "Monterrey (Guadalupe)"}, {"id": 55, "fase": "Fase de grups", "grup": "Group E", "data": "2026-06-25", "hora": "22:00", "equip1": "Curaçao", "equip2": "Ivory Coast", "seu": "Philadelphia"}, {"id": 56, "fase": "Fase de grups", "grup": "Group E", "data": "2026-06-25", "hora": "22:00", "equip1": "Ecuador", "equip2": "Germany", "seu": "New York/New Jersey (East Rutherford)"}, {"id": 57, "fase": "Fase de grups", "grup": "Group F", "data": "2026-06-26", "hora": "01:00", "equip1": "Japan", "equip2": "Sweden", "seu": "Dallas (Arlington)"}, {"id": 58, "fase": "Fase de grups", "grup": "Group F", "data": "2026-06-26", "hora": "01:00", "equip1": "Tunisia", "equip2": "Netherlands", "seu": "Kansas City"}, {"id": 59, "fase": "Fase de grups", "grup": "Group D", "data": "2026-06-26", "hora": "04:00", "equip1": "Turkey", "equip2": "USA", "seu": "Los Angeles (Inglewood)"}, {"id": 60, "fase": "Fase de grups", "grup": "Group D", "data": "2026-06-26", "hora": "04:00", "equip1": "Paraguay", "equip2": "Australia", "seu": "San Francisco Bay Area (Santa Clara)"}, {"id": 61, "fase": "Fase de grups", "grup": "Group I", "data": "2026-06-26", "hora": "21:00", "equip1": "Norway", "equip2": "France", "seu": "Boston (Foxborough)"}, {"id": 62, "fase": "Fase de grups", "grup": "Group I", "data": "2026-06-26", "hora": "21:00", "equip1": "Senegal", "equip2": "Iraq", "seu": "Toronto"}, {"id": 63, "fase": "Fase de grups", "grup": "Group H", "data": "2026-06-27", "hora": "02:00", "equip1": "Cape Verde", "equip2": "Saudi Arabia", "seu": "Houston"}, {"id": 64, "fase": "Fase de grups", "grup": "Group H", "data": "2026-06-27", "hora": "02:00", "equip1": "Uruguay", "equip2": "Spain", "seu": "Guadalajara (Zapopan)"}, {"id": 65, "fase": "Fase de grups", "grup": "Group G", "data": "2026-06-27", "hora": "05:00", "equip1": "Egypt", "equip2": "Iran", "seu": "Seattle"}, {"id": 66, "fase": "Fase de grups", "grup": "Group G", "data": "2026-06-27", "hora": "05:00", "equip1": "New Zealand", "equip2": "Belgium", "seu": "Vancouver"}, {"id": 67, "fase": "Fase de grups", "grup": "Group L", "data": "2026-06-27", "hora": "23:00", "equip1": "Panama", "equip2": "England", "seu": "New York/New Jersey (East Rutherford)"}, {"id": 68, "fase": "Fase de grups", "grup": "Group L", "data": "2026-06-27", "hora": "23:00", "equip1": "Croatia", "equip2": "Ghana", "seu": "Philadelphia"}, {"id": 69, "fase": "Fase de grups", "grup": "Group K", "data": "2026-06-28", "hora": "01:30", "equip1": "Colombia", "equip2": "Portugal", "seu": "Miami (Miami Gardens)"}, {"id": 70, "fase": "Fase de grups", "grup": "Group K", "data": "2026-06-28", "hora": "01:30", "equip1": "DR Congo", "equip2": "Uzbekistan", "seu": "Atlanta"}, {"id": 71, "fase": "Fase de grups", "grup": "Group J", "data": "2026-06-28", "hora": "04:00", "equip1": "Algeria", "equip2": "Austria", "seu": "Kansas City"}, {"id": 72, "fase": "Fase de grups", "grup": "Group J", "data": "2026-06-28", "hora": "04:00", "equip1": "Jordan", "equip2": "Argentina", "seu": "Dallas (Arlington)"}, {"id": 73, "fase": "Setzens de final", "grup": null, "data": "2026-06-28", "hora": "21:00", "equip1": "2A", "equip2": "2B", "seu": "Los Angeles (Inglewood)"}, {"id": 74, "fase": "Setzens de final", "grup": null, "data": "2026-06-29", "hora": "19:00", "equip1": "1C", "equip2": "2F", "seu": "Houston"}, {"id": 75, "fase": "Setzens de final", "grup": null, "data": "2026-06-29", "hora": "22:30", "equip1": "1E", "equip2": "3A/B/C/D/F", "seu": "Boston (Foxborough)"}, {"id": 76, "fase": "Setzens de final", "grup": null, "data": "2026-06-30", "hora": "03:00", "equip1": "1F", "equip2": "2C", "seu": "Monterrey (Guadalupe)"}, {"id": 77, "fase": "Setzens de final", "grup": null, "data": "2026-06-30", "hora": "19:00", "equip1": "2E", "equip2": "2I", "seu": "Dallas (Arlington)"}, {"id": 78, "fase": "Setzens de final", "grup": null, "data": "2026-06-30", "hora": "23:00", "equip1": "1I", "equip2": "3C/D/F/G/H", "seu": "New York/New Jersey (East Rutherford)"}, {"id": 79, "fase": "Setzens de final", "grup": null, "data": "2026-07-01", "hora": "03:00", "equip1": "1A", "equip2": "3C/E/F/H/I", "seu": "Mexico City"}, {"id": 80, "fase": "Setzens de final", "grup": null, "data": "2026-07-01", "hora": "18:00", "equip1": "1L", "equip2": "3E/H/I/J/K", "seu": "Atlanta"}, {"id": 81, "fase": "Setzens de final", "grup": null, "data": "2026-07-01", "hora": "22:00", "equip1": "1G", "equip2": "3A/E/H/I/J", "seu": "Seattle"}, {"id": 82, "fase": "Setzens de final", "grup": null, "data": "2026-07-02", "hora": "02:00", "equip1": "1D", "equip2": "3B/E/F/I/J", "seu": "San Francisco Bay Area (Santa Clara)"}, {"id": 83, "fase": "Setzens de final", "grup": null, "data": "2026-07-02", "hora": "21:00", "equip1": "1H", "equip2": "2J", "seu": "Los Angeles (Inglewood)"}, {"id": 84, "fase": "Setzens de final", "grup": null, "data": "2026-07-03", "hora": "01:00", "equip1": "2K", "equip2": "2L", "seu": "Toronto"}, {"id": 85, "fase": "Setzens de final", "grup": null, "data": "2026-07-03", "hora": "05:00", "equip1": "1B", "equip2": "3E/F/G/I/J", "seu": "Vancouver"}, {"id": 86, "fase": "Setzens de final", "grup": null, "data": "2026-07-03", "hora": "20:00", "equip1": "2D", "equip2": "2G", "seu": "Dallas (Arlington)"}, {"id": 87, "fase": "Setzens de final", "grup": null, "data": "2026-07-04", "hora": "00:00", "equip1": "1J", "equip2": "2H", "seu": "Miami (Miami Gardens)"}, {"id": 88, "fase": "Setzens de final", "grup": null, "data": "2026-07-04", "hora": "03:30", "equip1": "1K", "equip2": "3D/E/I/J/L", "seu": "Kansas City"}, {"id": 89, "fase": "Vuitens de final", "grup": null, "data": "2026-07-04", "hora": "19:00", "equip1": "W73", "equip2": "W75", "seu": "Houston"}, {"id": 90, "fase": "Vuitens de final", "grup": null, "data": "2026-07-04", "hora": "23:00", "equip1": "W74", "equip2": "W77", "seu": "Philadelphia"}, {"id": 91, "fase": "Vuitens de final", "grup": null, "data": "2026-07-05", "hora": "22:00", "equip1": "W76", "equip2": "W78", "seu": "New York/New Jersey (East Rutherford)"}, {"id": 92, "fase": "Vuitens de final", "grup": null, "data": "2026-07-06", "hora": "02:00", "equip1": "W79", "equip2": "W80", "seu": "Mexico City"}, {"id": 93, "fase": "Vuitens de final", "grup": null, "data": "2026-07-06", "hora": "21:00", "equip1": "W83", "equip2": "W84", "seu": "Dallas (Arlington)"}, {"id": 94, "fase": "Vuitens de final", "grup": null, "data": "2026-07-07", "hora": "02:00", "equip1": "W81", "equip2": "W82", "seu": "Seattle"}, {"id": 95, "fase": "Vuitens de final", "grup": null, "data": "2026-07-07", "hora": "18:00", "equip1": "W86", "equip2": "W88", "seu": "Atlanta"}, {"id": 96, "fase": "Vuitens de final", "grup": null, "data": "2026-07-07", "hora": "22:00", "equip1": "W85", "equip2": "W87", "seu": "Vancouver"}, {"id": 97, "fase": "Quarts de final", "grup": null, "data": "2026-07-09", "hora": "22:00", "equip1": "W89", "equip2": "W90", "seu": "Boston (Foxborough)"}, {"id": 98, "fase": "Quarts de final", "grup": null, "data": "2026-07-10", "hora": "21:00", "equip1": "W93", "equip2": "W94", "seu": "Los Angeles (Inglewood)"}, {"id": 99, "fase": "Quarts de final", "grup": null, "data": "2026-07-11", "hora": "23:00", "equip1": "W91", "equip2": "W92", "seu": "Miami (Miami Gardens)"}, {"id": 100, "fase": "Quarts de final", "grup": null, "data": "2026-07-12", "hora": "03:00", "equip1": "W95", "equip2": "W96", "seu": "Kansas City"}, {"id": 101, "fase": "Semifinals", "grup": null, "data": "2026-07-14", "hora": "21:00", "equip1": "W97", "equip2": "W98", "seu": "Dallas (Arlington)"}, {"id": 102, "fase": "Semifinals", "grup": null, "data": "2026-07-15", "hora": "21:00", "equip1": "W99", "equip2": "W100", "seu": "Atlanta"}, {"id": 103, "fase": "3r i 4t lloc", "grup": null, "data": "2026-07-18", "hora": "23:00", "equip1": "L101", "equip2": "L102", "seu": "Miami (Miami Gardens)"}, {"id": 104, "fase": "Final", "grup": null, "data": "2026-07-19", "hora": "21:00", "equip1": "W101", "equip2": "W102", "seu": "New York/New Jersey (East Rutherford)"}], "grups": {"Group A": ["Mexico", "South Africa", "South Korea", "Czech Republic"], "Group B": ["Canada", "Bosnia & Herzegovina", "Qatar", "Switzerland"], "Group C": ["Brazil", "Morocco", "Haiti", "Scotland"], "Group D": ["USA", "Paraguay", "Australia", "Turkey"], "Group E": ["Germany", "Curaçao", "Ivory Coast", "Ecuador"], "Group F": ["Netherlands", "Japan", "Sweden", "Tunisia"], "Group G": ["Belgium", "Egypt", "Iran", "New Zealand"], "Group H": ["Spain", "Cape Verde", "Saudi Arabia", "Uruguay"], "Group I": ["France", "Senegal", "Iraq", "Norway"], "Group J": ["Argentina", "Algeria", "Austria", "Jordan"], "Group K": ["Portugal", "DR Congo", "Uzbekistan", "Colombia"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "banderes": {"Mexico": "🇲🇽", "South Africa": "🇿🇦", "South Korea": "🇰🇷", "Czech Republic": "🇨🇿", "Canada": "🇨🇦", "Bosnia & Herzegovina": "🇧🇦", "Qatar": "🇶🇦", "Switzerland": "🇨🇭", "Brazil": "🇧🇷", "Morocco": "🇲🇦", "Haiti": "🇭🇹", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿", "USA": "🇺🇸", "Paraguay": "🇵🇾", "Australia": "🇦🇺", "Turkey": "🇹🇷", "Germany": "🇩🇪", "Curaçao": "🇨🇼", "Ivory Coast": "🇨🇮", "Ecuador": "🇪🇨", "Netherlands": "🇳🇱", "Japan": "🇯🇵", "Sweden": "🇸🇪", "Tunisia": "🇹🇳", "Belgium": "🇧🇪", "Egypt": "🇪🇬", "Iran": "🇮🇷", "New Zealand": "🇳🇿", "Spain": "🇪🇸", "Cape Verde": "🇨🇻", "Saudi Arabia": "🇸🇦", "Uruguay": "🇺🇾", "France": "🇫🇷", "Senegal": "🇸🇳", "Iraq": "🇮🇶", "Norway": "🇳🇴", "Argentina": "🇦🇷", "Algeria": "🇩🇿", "Austria": "🇦🇹", "Jordan": "🇯🇴", "Portugal": "🇵🇹", "DR Congo": "🇨🇩", "Uzbekistan": "🇺🇿", "Colombia": "🇨🇴", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Croatia": "🇭🇷", "Ghana": "🇬🇭", "Panama": "🇵🇦"}, "jugadors": ["Albi", "Amado", "Axel", "Gilbert", "Jordi", "Nil", "Oscar", "Pablo", "Pau"], "preds_partits": {"Albi": {"1": [0, 1], "2": [2, 1], "3": [1, 1], "4": [2, 2], "5": [1, 3], "6": [2, 1], "7": [0, 0], "8": [0, 2], "9": [3, 0], "10": [2, 1], "11": [1, 3], "12": [2, 0], "13": [5, 1], "14": [2, 1], "15": [0, 3], "16": [2, 1], "17": [3, 1], "18": [1, 6], "19": [2, 0], "20": [1, 0], "21": [5, 2], "22": [2, 0], "23": [1, 0], "24": [0, 3], "25": [0, 2], "26": [2, 1], "27": [2, 0], "28": [1, 1], "29": [2, 1], "30": [1, 4], "31": [5, 0], "32": [3, 1], "33": [0, 0], "34": [2, 0], "35": [3, 0], "36": [0, 2], "37": [2, 0], "38": [4, 0], "39": [2, 1], "40": [0, 3], "41": [1, 0], "42": [3, 0], "43": [2, 2], "44": [0, 1], "45": [4, 0], "46": [2, 2], "47": [1, 1], "48": [3, 0], "49": [2, 2], "50": [3, 1], "51": [1, 3], "52": [4, 1], "53": [0, 2], "54": [1, 2], "55": [1, 2], "56": [2, 3], "57": [2, 2], "58": [1, 3], "59": [3, 1], "60": [1, 1], "61": [0, 2], "62": [2, 0], "63": [3, 2], "64": [2, 3], "65": [1, 0], "66": [0, 3], "67": [0, 2], "68": [2, 0], "69": [1, 2], "70": [2, 2], "71": [2, 3], "72": [1, 4]}, "Amado": {"1": [2, 1], "2": [1, 1], "3": [1, 1], "4": [2, 0], "5": [0, 2], "6": [1, 1], "7": [0, 2], "8": [0, 2], "9": [6, 1], "10": [2, 1], "11": [2, 2], "12": [1, 1], "13": [4, 1], "14": [2, 0], "15": [1, 2], "16": [1, 0], "17": [3, 1], "18": [0, 2], "19": [1, 1], "20": [2, 0], "21": [3, 0], "22": [2, 2], "23": [1, 0], "24": [1, 2], "25": [1, 0], "26": [2, 1], "27": [3, 1], "28": [2, 2], "29": [3, 1], "30": [1, 2], "31": [5, 0], "32": [1, 0], "33": [1, 1], "34": [1, 1], "35": [2, 0], "36": [0, 2], "37": [2, 1], "38": [3, 0], "39": [2, 0], "40": [0, 2], "41": [2, 1], "42": [4, 0], "43": [2, 2], "44": [0, 2], "45": [2, 0], "46": [1, 0], "47": [1, 3], "48": [2, 0], "49": [1, 0], "50": [2, 1], "51": [0, 2], "52": [3, 1], "53": [0, 0], "54": [1, 3], "55": [1, 2], "56": [1, 2], "57": [2, 2], "58": [1, 3], "59": [0, 0], "60": [2, 1], "61": [1, 2], "62": [2, 1], "63": [1, 0], "64": [1, 1], "65": [2, 1], "66": [0, 2], "67": [0, 2], "68": [1, 1], "69": [1, 2], "70": [1, 0], "71": [1, 2], "72": [1, 4]}, "Axel": {"1": [2, 2], "2": [2, 0], "3": [2, 0], "4": [1, 1], "5": [1, 3], "6": [2, 1], "7": [0, 2], "8": [0, 2], "9": [3, 0], "10": [1, 2], "11": [2, 1], "12": [0, 1], "13": [4, 0], "14": [2, 1], "15": [1, 2], "16": [1, 1], "17": [2, 1], "18": [0, 2], "19": [3, 1], "20": [2, 0]}, "Gilbert": {"1": [1, 1], "2": [0, 1], "3": [1, 0], "4": [1, 0], "5": [0, 3], "6": [1, 1], "7": [0, 2], "8": [1, 1], "9": [5, 0], "10": [2, 0], "11": [1, 1], "12": [1, 0], "13": [4, 0], "14": [2, 1], "15": [0, 1], "16": [1, 0], "17": [2, 1], "18": [0, 1], "19": [3, 1], "20": [2, 0], "21": [4, 0], "22": [1, 1], "23": [1, 0], "24": [0, 2]}, "Jordi": {"1": [2, 0], "2": [1, 2], "3": [2, 0], "4": [3, 1], "5": [0, 2], "6": [3, 1], "7": [0, 1], "8": [1, 1], "9": [4, 1], "10": [2, 0], "11": [0, 1], "12": [2, 0], "13": [4, 0], "14": [2, 1], "15": [0, 3], "16": [1, 0], "17": [4, 1], "18": [1, 1], "19": [3, 0], "20": [2, 0], "21": [3, 0], "22": [1, 1]}, "Nil": {"1": [1, 1], "2": [0, 1], "3": [0, 0], "4": [2, 1], "5": [0, 0], "6": [3, 2], "7": [0, 0], "8": [0, 2], "9": [2, 1], "10": [2, 2], "11": [1, 1], "12": [1, 0], "13": [4, 0], "14": [1, 2], "15": [1, 1], "16": [0, 0], "17": [2, 1], "18": [0, 3], "19": [2, 0], "20": [1, 0], "21": [3, 1], "22": [2, 2], "23": [1, 1], "24": [0, 1]}, "Oscar": {"1": [2, 1], "2": [1, 1], "3": [1, 1], "4": [0, 1], "5": [0, 1], "6": [2, 1], "7": [0, 4], "8": [0, 2], "9": [3, 0], "10": [3, 1], "11": [1, 3], "12": [2, 0], "13": [4, 0], "14": [2, 0], "15": [2, 1], "16": [0, 0], "17": [2, 0], "18": [0, 2], "19": [2, 0], "20": [2, 0], "21": [4, 0], "22": [2, 1], "23": [2, 1], "24": [0, 3], "25": [2, 0], "26": [1, 0], "27": [2, 0], "28": [1, 1], "29": [2, 0], "30": [1, 2], "31": [4, 0], "32": [2, 0], "33": [3, 1], "34": [2, 0], "35": [3, 0], "36": [0, 1], "37": [2, 0], "38": [3, 0], "39": [2, 0], "40": [0, 1], "41": [2, 0], "42": [3, 0], "43": [1, 2], "44": [0, 2], "45": [3, 0], "46": [2, 1], "47": [0, 2], "48": [2, 0], "49": [1, 2], "50": [2, 0], "51": [0, 2], "52": [3, 0], "53": [0, 1], "54": [0, 2], "55": [0, 2], "56": [2, 1], "57": [1, 1], "58": [0, 3], "59": [1, 3], "60": [1, 1], "61": [0, 2], "62": [2, 0], "63": [0, 3], "64": [0, 1], "65": [1, 0], "66": [0, 2], "67": [0, 4], "68": [2, 1], "69": [1, 2], "70": [1, 0], "71": [2, 1], "72": [0, 3]}, "Pablo": {"1": [2, 0], "2": [1, 1], "3": [2, 1], "4": [1, 0], "5": [1, 1], "6": [3, 1], "7": [0, 1], "8": [1, 2], "9": [4, 0], "10": [2, 1], "11": [0, 1], "12": [0, 0], "13": [3, 0], "14": [2, 0], "15": [1, 2], "16": [0, 1], "17": [4, 0], "18": [0, 1], "19": [6, 1], "20": [2, 0], "21": [3, 0], "22": [2, 1], "23": [1, 1], "24": [1, 1]}, "Pau": {"1": [3, 1], "2": [1, 1], "3": [1, 0], "4": [2, 1], "5": [0, 2], "6": [2, 1], "7": [0, 2], "8": [1, 3], "9": [3, 0], "10": [2, 2], "11": [2, 1], "12": [1, 1], "13": [4, 1], "14": [2, 1], "15": [0, 2], "16": [3, 1], "17": [3, 1], "18": [0, 3], "19": [2, 1], "20": [2, 1]}}, "preds_grups": {"Albi": {"Group A": ["Mexico", "Czech Republic", "South Korea", "South Africa"], "Group B": ["Switzerland", "Canada", "Bosnia & Herzegovina", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["Turkey", "USA", "Paraguay", "Australia"], "Group E": ["Germany", "Ecuador", "Ivory Coast", "Curaçao"], "Group F": ["Netherlands", "Sweden", "Japan", "Tunisia"], "Group G": ["Belgium", "Egypt", "Iran", "New Zealand"], "Group H": ["Spain", "Uruguay", "Cape Verde", "Saudi Arabia"], "Group I": ["France", "Norway", "Senegal", "Iraq"], "Group J": ["Argentina", "Austria", "Algeria", "Jordan"], "Group K": ["Portugal", "Colombia", "Uzbekistan", "DR Congo"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "Amado": {"Group A": ["South Korea", "Mexico", "Czech Republic", "South Africa"], "Group B": ["Switzerland", "Canada", "Bosnia & Herzegovina", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["Turkey", "USA", "Paraguay", "Australia"], "Group E": ["Germany", "Ivory Coast", "Ecuador", "Curaçao"], "Group F": ["Netherlands", "Japan", "Sweden", "Tunisia"], "Group G": ["Belgium", "Egypt", "Iran", "New Zealand"], "Group H": ["Spain", "Uruguay", "Cape Verde", "Saudi Arabia"], "Group I": ["France", "Norway", "Senegal", "Iraq"], "Group J": ["Argentina", "Austria", "Algeria", "Jordan"], "Group K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "Axel": {"Group A": ["South Africa", "South Korea", "Mexico", "Czech Republic"], "Group B": ["Canada", "Switzerland", "Bosnia & Herzegovina", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["Turkey", "Paraguay", "USA", "Australia"], "Group E": ["Germany", "Ivory Coast", "Ecuador", "Curaçao"], "Group F": ["Japan", "Netherlands", "Tunisia", "Sweden"], "Group G": ["Belgium", "Egypt", "New Zealand", "Iran"], "Group H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"], "Group I": ["France", "Senegal", "Norway", "Iraq"], "Group J": ["Argentina", "Algeria", "Austria", "Jordan"], "Group K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"], "Group L": ["Croatia", "England", "Ghana", "Panama"]}, "Gilbert": {"Group A": ["Czech Republic", "Mexico", "South Africa", "South Korea"], "Group B": ["Switzerland", "Canada", "Bosnia & Herzegovina", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["USA", "Turkey", "Paraguay", "Australia"], "Group E": ["Germany", "Ecuador", "Ivory Coast", "Curaçao"], "Group F": ["Netherlands", "Sweden", "Japan", "Tunisia"], "Group G": ["Belgium", "Egypt", "Iran", "New Zealand"], "Group H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"], "Group I": ["France", "Senegal", "Norway", "Iraq"], "Group J": ["Argentina", "Austria", "Algeria", "Jordan"], "Group K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "Jordi": {"Group A": ["Mexico", "Czech Republic", "South Africa", "South Korea"], "Group B": ["Canada", "Switzerland", "Bosnia & Herzegovina", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["USA", "Turkey", "Australia", "Paraguay"], "Group E": ["Germany", "Ecuador", "Ivory Coast", "Curaçao"], "Group F": ["Netherlands", "Japan", "Sweden", "Tunisia"], "Group G": ["Belgium", "Egypt", "Iran", "New Zealand"], "Group H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"], "Group I": ["France", "Senegal", "Norway", "Iraq"], "Group J": ["Argentina", "Algeria", "Austria", "Jordan"], "Group K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "Nil": {"Group A": ["Czech Republic", "Mexico", "South Korea", "South Africa"], "Group B": ["Switzerland", "Bosnia & Herzegovina", "Canada", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["Turkey", "Australia", "USA", "Paraguay"], "Group E": ["Ecuador", "Germany", "Ivory Coast", "Curaçao"], "Group F": ["Netherlands", "Japan", "Sweden", "Tunisia"], "Group G": ["Egypt", "Belgium", "Iran", "New Zealand"], "Group H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"], "Group I": ["France", "Senegal", "Norway", "Iraq"], "Group J": ["Argentina", "Austria", "Algeria", "Jordan"], "Group K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "Oscar": {"Group A": ["Mexico", "Czech Republic", "South Korea", "South Africa"], "Group B": ["Bosnia & Herzegovina", "Switzerland", "Canada", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["Turkey", "USA", "Paraguay", "Australia"], "Group E": ["Germany", "Ecuador", "Ivory Coast", "Curaçao"], "Group F": ["Netherlands", "Japan", "Sweden", "Tunisia"], "Group G": ["Belgium", "Egypt", "Iran", "New Zealand"], "Group H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"], "Group I": ["France", "Senegal", "Norway", "Iraq"], "Group J": ["Argentina", "Algeria", "Austria", "Jordan"], "Group K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "Pablo": {"Group A": ["Mexico", "South Korea", "Czech Republic", "South Africa"], "Group B": ["Switzerland", "Canada", "Bosnia & Herzegovina", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["Turkey", "USA", "Paraguay", "Australia"], "Group E": ["Germany", "Ecuador", "Ivory Coast", "Curaçao"], "Group F": ["Netherlands", "Sweden", "Japan", "Tunisia"], "Group G": ["Belgium", "Egypt", "Iran", "New Zealand"], "Group H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"], "Group I": ["France", "Norway", "Senegal", "Iraq"], "Group J": ["Argentina", "Austria", "Algeria", "Jordan"], "Group K": ["Portugal", "Colombia", "Uzbekistan", "DR Congo"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}, "Pau": {"Group A": ["Mexico", "South Korea", "Czech Republic", "South Africa"], "Group B": ["Switzerland", "Canada", "Bosnia & Herzegovina", "Qatar"], "Group C": ["Brazil", "Morocco", "Scotland", "Haiti"], "Group D": ["Turkey", "USA", "Paraguay", "Australia"], "Group E": ["Germany", "Ivory Coast", "Ecuador", "Curaçao"], "Group F": ["Japan", "Netherlands", "Sweden", "Tunisia"], "Group G": ["Belgium", "Iran", "Egypt", "New Zealand"], "Group H": ["Spain", "Uruguay", "Saudi Arabia", "Cape Verde"], "Group I": ["France", "Norway", "Senegal", "Iraq"], "Group J": ["Argentina", "Austria", "Algeria", "Jordan"], "Group K": ["Portugal", "Colombia", "DR Congo", "Uzbekistan"], "Group L": ["England", "Croatia", "Ghana", "Panama"]}}, "resultats": {"1": [2, 0], "2": [2, 1], "3": [1, 1], "4": [4, 1], "5": [1, 1], "6": [1, 1], "7": [0, 1], "8": [2, 0], "9": [7, 1], "10": [2, 2], "11": [1, 0], "12": [5, 1], "13": [0, 0], "14": [1, 1], "15": [1, 1], "16": [2, 2], "17": [3, 1], "18": [1, 4], "19": [3, 0], "20": [3, 1]}, "resultats_grups": {}, "classificacio": [{"jugador": "Nil", "punts": 16, "p_partits": 16, "p_grups": 0, "exactes": 2, "guanyadors": 10, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Amado", "punts": 15, "p_partits": 15, "p_grups": 0, "exactes": 3, "guanyadors": 6, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Pablo", "punts": 15, "p_partits": 15, "p_grups": 0, "exactes": 3, "guanyadors": 6, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Albi", "punts": 14, "p_partits": 14, "p_grups": 0, "exactes": 3, "guanyadors": 5, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Jordi", "punts": 14, "p_partits": 14, "p_grups": 0, "exactes": 3, "guanyadors": 5, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Pau", "punts": 14, "p_partits": 14, "p_grups": 0, "exactes": 2, "guanyadors": 8, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Oscar", "punts": 12, "p_partits": 12, "p_grups": 0, "exactes": 1, "guanyadors": 9, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Gilbert", "punts": 11, "p_partits": 11, "p_grups": 0, "exactes": 1, "guanyadors": 8, "grups_ok": 0, "partits_puntuats": 20}, {"jugador": "Axel", "punts": 9, "p_partits": 9, "p_grups": 0, "exactes": 0, "guanyadors": 9, "grups_ok": 0, "partits_puntuats": 20}]};
+const B = DATA.banderes;
+const flag = t => B[t] ? B[t]+' ' : '';
+const teamHtml = t => `<span class="flag">${B[t]||''}</span> ${t}`;
+const el = (h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild;};
+
+// ---- top stats
+(function(){
+  const nRes = Object.keys(DATA.resultats).length;
+  const nGr = Object.keys(DATA.resultats_grups).length;
+  const totG = Object.keys(DATA.grups).length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><b>${DATA.jugadors.length}</b><small>jugadors</small></div>
+    <div class="stat"><b>${nRes}/${DATA.partits.length}</b><small>partits jugats</small></div>
+    <div class="stat"><b>${nGr}/${totG}</b><small>grups resolts</small></div>`;
+})();
+
+// ---- tabs
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.tab).classList.add('active');
+});
+
+// ================= CLASSIFICACIÓ =================
+function renderClassificacio(){
+  const p = document.getElementById('classificacio');
+  const t = DATA.classificacio;
+  const hiHaResultats = Object.keys(DATA.resultats).length || Object.keys(DATA.resultats_grups).length;
+  const medal = i => ['🥇','🥈','🥉'][i] || (i+1);
+  let rows = t.map((r,i)=>`
+    <tr>
+      <td class="rank">${medal(i)}</td>
+      <td>${r.jugador}</td>
+      <td class="num total">${r.punts}</td>
+      <td class="num">${r.p_partits}</td>
+      <td class="num">${r.p_grups}</td>
+      <td class="num">${r.exactes}</td>
+      <td class="num">${r.guanyadors}</td>
+      <td class="num">${r.grups_ok}</td>
+    </tr>`).join('');
+  p.innerHTML = `
+    <div class="card">
+      ${hiHaResultats?'':'<div class="empty" style="padding:12px">Encara no hi ha resultats reals. La taula s\'omplirà a mesura que omplis <code>data/resultats.csv</code> i <code>data/resultats_grups.csv</code> i tornis a generar la web.</div>'}
+      <table>
+        <thead><tr>
+          <th class="rank">#</th><th>Jugador</th>
+          <th class="num">Total</th><th class="num">Partits</th><th class="num">Grups</th>
+          <th class="num">Exactes</th><th class="num">1X2</th><th class="num">Grups OK</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="legend">
+        <span><b>Total</b> = Partits + Grups</span>
+        <span>Exacte 3p · Guanyador/empat 1p · Grup encertat +3p</span>
+      </div>
+    </div>`;
+}
+
+// ================= GRUPS =================
+// Classificació actual d'un grup a partir dels resultats reals jugats.
+function groupStandings(g, equips){
+  const st = {};
+  equips.forEach((t,i)=>st[t]={team:t,pts:0,pj:0,gf:0,ga:0,gd:0,ord:i});
+  for(const m of DATA.partits){
+    if(m.grup!==g) continue;
+    const r = DATA.resultats[m.id];
+    if(!r) continue;
+    const a=st[m.equip1], b=st[m.equip2];
+    if(!a||!b) continue;
+    a.pj++; b.pj++; a.gf+=r[0]; a.ga+=r[1]; b.gf+=r[1]; b.ga+=r[0];
+    if(r[0]>r[1]) a.pts+=3; else if(r[0]<r[1]) b.pts+=3; else {a.pts++; b.pts++;}
+  }
+  Object.values(st).forEach(s=>s.gd=s.gf-s.ga);
+  return Object.values(st).sort((x,y)=>
+    y.pts-x.pts || y.gd-x.gd || y.gf-x.gf || x.ord-y.ord);
+}
+
+function renderGrups(){
+  const p = document.getElementById('grups');
+  const jug = DATA.jugadors;
+  const medals = ['m1','m2','m3'];
+  let cards = '';
+  for(const [g, equips] of Object.entries(DATA.grups)){
+    const real = DATA.resultats_grups[g];        // ordre final real, si es coneix
+    const standings = groupStandings(g, equips); // ordenat per classificació actual
+    const anyPlayed = standings.some(s=>s.pj>0);
+
+    let head = `<th class="tcol">Equip</th>` + jug.map(j=>`<th class="jcol">${j}</th>`).join('');
+    let body = '';
+    standings.forEach((s, idx)=>{
+      const team = s.team;
+      const pos = `<span class="pos">${idx+1}</span>`;
+      const stat = anyPlayed
+        ? `<span class="tstat">${s.pts}p · ${s.pj}j · ${s.gd>=0?'+':''}${s.gd}</span>` : '';
+      const cells = jug.map(j=>{
+        const pred = (DATA.preds_grups[j]||{})[g];
+        if(!pred) return `<td class="jcol muted">·</td>`;
+        const pi = pred.indexOf(team);
+        if(pi<0) return `<td class="jcol muted">·</td>`;
+        if(pi<3){
+          const ring = real && real[pi]===team ? ' ring' : '';
+          return `<td class="jcol"><span class="medal ${medals[pi]}${ring}">${pi+1}</span></td>`;
+        }
+        return `<td class="jcol"><span class="medal m4">4</span></td>`;
+      }).join('');
+      body += `<tr><td class="tcol">${pos}<span class="flag">${B[team]||''}</span> ${team}${stat}</td>${cells}</tr>`;
+    });
+
+    // badge +3 per qui clava tot l'ordre final real
+    const encerten = real ? jug.filter(j=>{
+      const pr=(DATA.preds_grups[j]||{})[g];
+      return pr && pr.every((t,i)=>t===real[i]);
+    }) : [];
+    const badge = encerten.length?` <span class="badge3">+3: ${encerten.join(', ')}</span>`:'';
+    const tag = real ? `<span class="live done">final</span>`
+              : anyPlayed ? `<span class="live play">en joc</span>`
+              : `<span class="live">sense jugar</span>`;
+    cards += `
+      <div class="card grp wide">
+        <h3>Grup ${g.replace('Group ','')} ${tag}${badge}</h3>
+        <div class="tscroll"><table class="gtbl">
+          <thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>
+      </div>`;
+  }
+  p.innerHTML = `<div class="legend" style="margin:4px 2px 14px">
+      Files ordenades per la <b>classificació actual</b> del grup. Cada columna és un jugador i la medalla és el podi que ha predit:
+      <span class="medal m1">1</span> <span class="medal m2">2</span> <span class="medal m3">3</span> or/plata/bronze ·
+      <span class="medal m4">4</span> previst últim · · sense predicció ·
+      anella verda = encerta la posició final real
+    </div><div class="grups-stack">${cards}</div>`;
+}
+
+// ================= PARTITS =================
+function renderPartits(){
+  const p = document.getElementById('partits');
+  const jug = DATA.jugadors;
+  const sel = `<div class="controls">
+      <label>Jugador:</label>
+      <select id="selJug">${jug.map(j=>`<option>${j}</option>`).join('')}</select>
+      <label><input type="checkbox" id="nomesJugats"> només partits amb resultat</label>
+    </div>`;
+  p.innerHTML = sel + `<div id="partitsBody"></div>`;
+  const draw = ()=>{
+    const j = document.getElementById('selJug').value;
+    const nomesJugats = document.getElementById('nomesJugats').checked;
+    const preds = DATA.preds_partits[j] || {};
+    const nPred = Object.keys(preds).length;
+    let total=0, fase='', html='';
+    if(!nPred){
+      html = `<div class="card"><div class="empty">${j} encara no ha apuntat cap resultat de partit.<br>
+        <span class="muted">Apunta'ls amb: <code>python apunta.py partits "${j}" 1=2-1 ...</code></span></div></div>`;
+    } else {
+      html = '<div class="card"><table><tbody>';
+      for(const m of DATA.partits){
+        const pred = preds[m.id];
+        const real = DATA.resultats[m.id];
+        if(nomesJugats && !real) continue;
+        if(m.fase!==fase){ fase=m.fase;
+          html += `<tr><td colspan="4" class="fase-h">${fase}</td></tr>`; }
+        let cls='', pts='';
+        if(pred && real){
+          const exact = pred[0]==real[0] && pred[1]==real[1];
+          const sgnP=Math.sign(pred[0]-pred[1]), sgnR=Math.sign(real[0]-real[1]);
+          if(exact){cls='sc-exact';pts='+3';total+=3;}
+          else if(sgnP===sgnR){cls='sc-win';pts='+1';total+=1;}
+          else {cls='sc-zero';pts='0';}
+        }
+        const predTxt = pred?`<b>${pred[0]}-${pred[1]}</b>`:'<span class="muted">—</span>';
+        const realTxt = real?`${real[0]}-${real[1]}`:'<span class="muted">·</span>';
+        html += `<tr class="${cls}">
+          <td>${teamHtml(m.equip1)} <span class="muted">vs</span> ${teamHtml(m.equip2)}
+              <div class="muted" style="font-size:11px">#${m.id} · ${m.data} ${m.hora}</div></td>
+          <td class="num">${predTxt}</td>
+          <td class="num">${realTxt}</td>
+          <td class="num">${pts}</td>
+        </tr>`;
+      }
+      html += '</tbody></table>';
+      html += `<div class="legend"><b>Punts de partits de ${j}: ${total}</b>
+        <span style="margin-left:14px"><span class="dot" style="background:#16331f"></span>exacte +3</span>
+        <span><span class="dot" style="background:#3a3413"></span>guanyador +1</span></div></div>`;
+    }
+    document.getElementById('partitsBody').innerHTML = html;
+  };
+  document.getElementById('selJug').onchange = draw;
+  document.getElementById('nomesJugats').onchange = draw;
+  draw();
+}
+
+renderClassificacio();
+renderGrups();
+renderPartits();
+</script>
+</body>
+</html>
