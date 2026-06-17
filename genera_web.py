@@ -310,6 +310,7 @@ PLANTILLA = r"""<!DOCTYPE html>
           text-transform:uppercase;letter-spacing:.5px}
   .legend{font-size:12px;color:var(--muted);margin-top:8px}
   .legend span{display:inline-block;margin-right:14px}
+  .legend span.medal{display:inline-flex;margin-right:4px}
   .dot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:4px}
   .stat{display:inline-flex;flex-direction:column;align-items:center;background:var(--card2);
         border:1px solid var(--line);border-radius:12px;padding:8px 16px;margin:4px}
