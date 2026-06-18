@@ -23,12 +23,12 @@
 22,2026-06-17,22:00,Fase de grups,England,Croatia,1,1
 23,2026-06-18,01:00,Fase de grups,Ghana,Panama,0,1
 24,2026-06-18,04:00,Fase de grups,Uzbekistan,Colombia,0,2
-25,2026-06-18,18:00,Fase de grups,Czech Republic,South Africa,,
-26,2026-06-18,21:00,Fase de grups,Switzerland,Bosnia & Herzegovina,,
-27,2026-06-19,00:00,Fase de grups,Canada,Qatar,,
-28,2026-06-19,03:00,Fase de grups,Mexico,South Korea,,
-29,2026-06-19,21:00,Fase de grups,USA,Australia,,
-30,2026-06-20,00:00,Fase de grups,Scotland,Morocco,,
+25,2026-06-18,18:00,Fase de grups,Czech Republic,South Africa,1,1
+26,2026-06-18,21:00,Fase de grups,Switzerland,Bosnia & Herzegovina,2,0
+27,2026-06-19,00:00,Fase de grups,Canada,Qatar,2,0
+28,2026-06-19,03:00,Fase de grups,Mexico,South Korea,2,1
+29,2026-06-19,21:00,Fase de grups,USA,Australia,2,0
+30,2026-06-20,00:00,Fase de grups,Scotland,Morocco,0,2
 31,2026-06-20,02:30,Fase de grups,Brazil,Haiti,,
 32,2026-06-20,05:00,Fase de grups,Turkey,Paraguay,,
 33,2026-06-20,19:00,Fase de grups,Netherlands,Sweden,,
