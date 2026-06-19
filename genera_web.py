@@ -363,10 +363,10 @@ PLANTILLA = r"""<!DOCTYPE html>
 </header>
 <div class="wrap">
   <div class="tabs">
-    <button class="tab active" data-tab="classificacio">🏆 Classificació</button>
-    <button class="tab" data-tab="propers">⏭️ Propers</button>
-    <button class="tab" data-tab="grups">📊 Grups</button>
-    <button class="tab" data-tab="partits">⚽ Partits</button>
+    <button class="tab active" data-tab="classificacio">Classificació</button>
+    <button class="tab" data-tab="propers">Propers</button>
+    <button class="tab" data-tab="grups">Grups</button>
+    <button class="tab" data-tab="partits">Partits</button>
   </div>
   <div class="panel active" id="classificacio"></div>
   <div class="panel" id="propers"></div>
