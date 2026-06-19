@@ -379,6 +379,7 @@ function renderClassificacio(){
       <td class="num">${r.p_grups}</td>
       <td class="num">${r.exactes}</td>
       <td class="num">${r.guanyadors}</td>
+      <td class="num total">${r.exactes + r.guanyadors}</td>
       <td class="num">${r.grups_ok}</td>
     </tr>`).join('');
   p.innerHTML = `
@@ -390,7 +391,9 @@ function renderClassificacio(){
           <th class="num">Total</th>
           <th class="num" title="Punts obtinguts encertant resultats de partits">Pts partits</th>
           <th class="num" title="Punts obtinguts encertant el podi dels grups">Pts grups</th>
-          <th class="num">Exactes</th><th class="num">1X2</th><th class="num">Grups OK</th>
+          <th class="num">Exactes</th><th class="num">1X2</th>
+          <th class="num" title="Total d'encerts: exactes + guanyador/empat">Encerts</th>
+          <th class="num">Grups OK</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
