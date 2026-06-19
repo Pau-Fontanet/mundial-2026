@@ -293,6 +293,12 @@ PLANTILLA = r"""<!DOCTYPE html>
   th,td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--line)}
   thead th{position:sticky;top:0;background:#1a2138;z-index:1}
   th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  th.sortable{cursor:pointer;user-select:none;-webkit-user-select:none;white-space:nowrap;
+       transition:color .15s,background .15s;touch-action:manipulation}
+  th.sortable:hover{color:var(--txt)}
+  th.sortable.sorted{color:var(--accent2)}
+  .sarrow{display:inline-block;width:.9em;font-size:11px}
+  @media (max-width:640px){ th,td{padding:10px 8px} th.sortable{padding:12px 8px} }
   tbody tr{transition:background .15s}
   tbody tr:hover{background:#ffffff08}
   tr:last-child td{border-bottom:none}
@@ -402,6 +408,18 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
 
 // ================= CLASSIFICACIÓ =================
 let classGrup = 'Conjunt';
+// Columnes ordenables. val(r) dóna el valor a comparar; num=alineació dreta.
+const CLASS_COLS = [
+  {key:'jugador',   label:'Jugador',    num:false, val:r=>r.jugador},
+  {key:'punts',     label:'Total',      num:true,  val:r=>r.punts,                 cls:'total'},
+  {key:'p_partits', label:'Pts partits',num:true,  val:r=>r.p_partits, title:'Punts obtinguts encertant resultats de partits'},
+  {key:'p_grups',   label:'Pts grups',  num:true,  val:r=>r.p_grups,   title:'Punts obtinguts encertant el podi dels grups'},
+  {key:'exactes',   label:'Exactes',    num:true,  val:r=>r.exactes},
+  {key:'guanyadors',label:'1X2',        num:true,  val:r=>r.guanyadors},
+  {key:'grups_ok',  label:'Grups OK',   num:true,  val:r=>r.grups_ok},
+  {key:'encerts',   label:'Encerts',    num:true,  val:r=>r.exactes+r.guanyadors,  cls:'encerts', title:"Total d'encerts: exactes + guanyador/empat"},
+];
+let classSort = {key:'punts', dir:-1};   // -1 descendent, 1 ascendent
 function renderClassificacio(){
   const p = document.getElementById('classificacio');
   const hiHaResultats = Object.keys(DATA.resultats).length || Object.keys(DATA.resultats_grups).length;
@@ -409,42 +427,44 @@ function renderClassificacio(){
   const grupsBtns = ['Conjunt','Ofi','Ñeris'].map(g=>
     `<button class="gtab${g===classGrup?' active':''}" data-grup="${g}">${g}</button>`).join('');
   const filtra = r => classGrup==='Conjunt' || (DATA.equips_jugadors[classGrup]||[]).includes(r.jugador);
-  const t = DATA.classificacio.filter(filtra);
+  const col = CLASS_COLS.find(c=>c.key===classSort.key) || CLASS_COLS[1];
+  const t = DATA.classificacio.filter(filtra).slice().sort((a,b)=>{
+    const va=col.val(a), vb=col.val(b);
+    let c = typeof va==='string' ? va.localeCompare(vb,'ca') : va-vb;
+    if(c===0) c = b.punts-a.punts;            // desempat sempre pels punts totals
+    return c*classSort.dir;
+  });
+  const arrow = c => c.key===classSort.key ? (classSort.dir<0?' ▾':' ▴') : '';
+  const head = `<th class="rank">#</th>` + CLASS_COLS.map(c=>
+    `<th class="sortable${c.num?' num':''}${c.key===classSort.key?' sorted':''}" data-key="${c.key}"`
+    + `${c.title?` title="${c.title}"`:''}>${c.label}<span class="sarrow">${arrow(c)}</span></th>`).join('');
   let rows = t.map((r,i)=>`
     <tr class="${hiHaResultats&&i<3?'r'+(i+1):''}">
-      <td class="rank">${medal(i)}</td>
-      <td>${r.jugador}</td>
-      <td class="num total">${r.punts}</td>
-      <td class="num">${r.p_partits}</td>
-      <td class="num">${r.p_grups}</td>
-      <td class="num">${r.exactes}</td>
-      <td class="num">${r.guanyadors}</td>
-      <td class="num">${r.grups_ok}</td>
-      <td class="num encerts">${r.exactes + r.guanyadors}</td>
-    </tr>`).join('');
+      <td class="rank">${medal(i)}</td>`
+    + CLASS_COLS.map(c=>`<td class="${c.num?'num':''}${c.cls?' '+c.cls:''}">${c.val(r)}</td>`).join('')
+    + `</tr>`).join('');
   p.innerHTML = `
     <div class="gtabs">${grupsBtns}</div>
     <div class="card">
       ${hiHaResultats?'':'<div class="empty" style="padding:12px">Encara no hi ha resultats reals. La taula s\'omplirà a mesura que omplis <code>data/resultats.csv</code> i <code>data/resultats_grups.csv</code> i tornis a generar la web.</div>'}
-      <table>
-        <thead><tr>
-          <th class="rank">#</th><th>Jugador</th>
-          <th class="num">Total</th>
-          <th class="num" title="Punts obtinguts encertant resultats de partits">Pts partits</th>
-          <th class="num" title="Punts obtinguts encertant el podi dels grups">Pts grups</th>
-          <th class="num">Exactes</th><th class="num">1X2</th>
-          <th class="num">Grups OK</th>
-          <th class="num" title="Total d'encerts: exactes + guanyador/empat">Encerts</th>
-        </tr></thead>
+      <div class="tscroll"><table>
+        <thead><tr>${head}</tr></thead>
         <tbody>${rows}</tbody>
-      </table>
+      </table></div>
       <div class="legend">
+        <span>Toca una capçalera per ordenar.</span>
         <span><b>Total</b> = <b>Pts partits</b> + <b>Pts grups</b> (punts que ha fet cada jugador per partits i per grups)</span>
         <span>Exacte 3p · Guanyador/empat 1p · Grup encertat +3p</span>
         ${classGrup==='Conjunt'?'':`<span><b>${classGrup}</b>: ${DATA.equips_jugadors[classGrup].join(', ')}</span>`}
       </div>
     </div>`;
   p.querySelectorAll('.gtab').forEach(b=>b.onclick=()=>{classGrup=b.dataset.grup;renderClassificacio();});
+  p.querySelectorAll('th.sortable').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.key;
+    if(classSort.key===k){ classSort.dir*=-1; }
+    else { classSort.key=k; classSort.dir = (k==='jugador'?1:-1); }  // text asc, números desc
+    renderClassificacio();
+  });
 }
 
 // ================= GRUPS =================
