@@ -35,8 +35,8 @@ PUNTS_GRUP = 3
 
 # Grups de jugadors per filtrar la classificació. El Pau forma part dels dos.
 EQUIPS_JUGADORS = {
-    "Ofi": ["Albi", "Amado", "Jordi", "Nil", "Pablo", "Pau"],
-    "Ñeris": ["Axel", "Gilbert", "Oscar", "Pau"],
+    "Ofi": ["Amado", "Jordi", "Nil", "Pablo", "Pau"],
+    "Ñeris": ["Albi", "Axel", "Gilbert", "Oscar", "Pau"],
 }
 
 # Bandera (emoji) per equip. Els codis d'eliminatòries (2A, W73...) no en tenen.
