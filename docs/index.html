@@ -95,10 +95,12 @@
 <div class="wrap">
   <div class="tabs">
     <button class="tab active" data-tab="classificacio">🏆 Classificació</button>
+    <button class="tab" data-tab="propers">⏭️ Propers</button>
     <button class="tab" data-tab="grups">📊 Grups</button>
     <button class="tab" data-tab="partits">⚽ Partits</button>
   </div>
   <div class="panel active" id="classificacio"></div>
+  <div class="panel" id="propers"></div>
   <div class="panel" id="grups"></div>
   <div class="panel" id="partits"></div>
 </div>
@@ -240,6 +242,69 @@ function renderGrups(){
     </div><div class="grups-stack">${cards}</div>`;
 }
 
+// ================= PROPERS =================
+// Els propers N partits sense resultat (ordre cronològic = ordre per id).
+function propersPartits(n){
+  const out=[];
+  for(const m of DATA.partits){
+    if(DATA.resultats[m.id]) continue;   // ja jugat
+    out.push(m);
+    if(out.length>=n) break;
+  }
+  return out;
+}
+
+function renderPropers(){
+  const p = document.getElementById('propers');
+  const jug = DATA.jugadors;
+  const ctrl = `<div class="controls">
+      <label>Mostra:</label>
+      <select id="selN">
+        <option value="4">els propers 4</option>
+        <option value="8">els propers 8</option>
+        <option value="12">els propers 12</option>
+      </select>
+    </div>`;
+  p.innerHTML = ctrl + `<div id="propersBody"></div>`;
+  const draw = ()=>{
+    const n = parseInt(document.getElementById('selN').value, 10);
+    const ms = propersPartits(n);
+    const body = document.getElementById('propersBody');
+    if(!ms.length){
+      body.innerHTML = `<div class="card"><div class="empty">No queden partits per jugar. 🎉</div></div>`;
+      return;
+    }
+    const now = new Date();
+    const head = `<th class="tcol">Partit</th>` + jug.map(j=>`<th class="jcol">${j}</th>`).join('');
+    let rows = '';
+    for(const m of ms){
+      const ko = new Date(`${m.data}T${m.hora||'00:00'}`);   // hora peninsular = hora local del navegador a ES
+      const enJoc = !isNaN(ko) && now >= ko;
+      const dm = `${m.data.slice(8,10)}/${m.data.slice(5,7)}`;
+      const tag = enJoc
+        ? `<span class="live play">en joc</span>`
+        : `<span class="live">${dm} · ${m.hora||''}</span>`;
+      const cells = jug.map(j=>{
+        const pr = (DATA.preds_partits[j]||{})[m.id];
+        return `<td class="jcol">${pr?`<b>${pr[0]}-${pr[1]}</b>`:'<span class="muted">·</span>'}</td>`;
+      }).join('');
+      rows += `<tr>
+        <td class="tcol">${teamHtml(m.equip1)} <span class="muted">vs</span> ${teamHtml(m.equip2)}
+            <div class="muted" style="font-size:11px">#${m.id} ${tag}</div></td>
+        ${cells}</tr>`;
+    }
+    body.innerHTML = `<div class="card">
+      <div class="tscroll"><table class="gtbl">
+        <thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="legend">Marcador que ha dit cada jugador per als propers partits ·
+        <span class="muted">·</span> = sense predicció ·
+        <span class="live play">en joc</span> = ja ha començat (hora peninsular)</div>
+    </div>`;
+  };
+  document.getElementById('selN').onchange = draw;
+  draw();
+}
+
 // ================= PARTITS =================
 function renderPartits(){
   const p = document.getElementById('partits');
@@ -298,6 +363,7 @@ function renderPartits(){
 }
 
 renderClassificacio();
+renderPropers();
 renderGrups();
 renderPartits();
 </script>
