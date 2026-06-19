@@ -33,6 +33,12 @@ PUNTS_EXACTE = 3
 PUNTS_GUANYADOR = 1
 PUNTS_GRUP = 3
 
+# Grups de jugadors per filtrar la classificació. El Pau forma part dels dos.
+EQUIPS_JUGADORS = {
+    "Ofi": ["Albi", "Amado", "Jordi", "Nil", "Pablo", "Pau"],
+    "Ñeris": ["Axel", "Gilbert", "Oscar", "Pau"],
+}
+
 # Bandera (emoji) per equip. Els codis d'eliminatòries (2A, W73...) no en tenen.
 BANDERES = {
     "Mexico": "🇲🇽", "South Africa": "🇿🇦", "South Korea": "🇰🇷", "Czech Republic": "🇨🇿",
@@ -217,6 +223,7 @@ def main() -> None:
         "resultats": {str(k): list(v) for k, v in resultats.items()},
         "resultats_grups": resultats_grups,
         "classificacio": taula,
+        "equips_jugadors": EQUIPS_JUGADORS,
     }
 
     WEB.mkdir(exist_ok=True)
@@ -256,6 +263,11 @@ PLANTILLA = r"""<!DOCTYPE html>
        padding:10px 18px;border-radius:999px;cursor:pointer;font-size:15px;transition:.15s}
   .tab:hover{border-color:var(--accent)}
   .tab.active{background:var(--accent);color:#06281c;font-weight:700;border-color:var(--accent)}
+  .gtabs{display:flex;gap:8px;justify-content:center;margin:16px 0 0;flex-wrap:wrap}
+  .gtab{background:var(--card);border:1px solid var(--line);color:var(--txt);
+        padding:6px 16px;border-radius:999px;cursor:pointer;font-size:14px;transition:.15s}
+  .gtab:hover{border-color:var(--accent2)}
+  .gtab.active{background:var(--accent2);color:#3a2c00;font-weight:700;border-color:var(--accent2)}
   .panel{display:none;animation:fade .25s}
   .panel.active{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
@@ -366,11 +378,15 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
 });
 
 // ================= CLASSIFICACIÓ =================
+let classGrup = 'Conjunt';
 function renderClassificacio(){
   const p = document.getElementById('classificacio');
-  const t = DATA.classificacio;
   const hiHaResultats = Object.keys(DATA.resultats).length || Object.keys(DATA.resultats_grups).length;
   const medal = i => ['🥇','🥈','🥉'][i] || (i+1);
+  const grupsBtns = ['Conjunt','Ofi','Ñeris'].map(g=>
+    `<button class="gtab${g===classGrup?' active':''}" data-grup="${g}">${g}</button>`).join('');
+  const filtra = r => classGrup==='Conjunt' || (DATA.equips_jugadors[classGrup]||[]).includes(r.jugador);
+  const t = DATA.classificacio.filter(filtra);
   let rows = t.map((r,i)=>`
     <tr>
       <td class="rank">${medal(i)}</td>
@@ -384,6 +400,7 @@ function renderClassificacio(){
       <td class="num encerts">${r.exactes + r.guanyadors}</td>
     </tr>`).join('');
   p.innerHTML = `
+    <div class="gtabs">${grupsBtns}</div>
     <div class="card">
       ${hiHaResultats?'':'<div class="empty" style="padding:12px">Encara no hi ha resultats reals. La taula s\'omplirà a mesura que omplis <code>data/resultats.csv</code> i <code>data/resultats_grups.csv</code> i tornis a generar la web.</div>'}
       <table>
@@ -401,8 +418,10 @@ function renderClassificacio(){
       <div class="legend">
         <span><b>Total</b> = <b>Pts partits</b> + <b>Pts grups</b> (punts que ha fet cada jugador per partits i per grups)</span>
         <span>Exacte 3p · Guanyador/empat 1p · Grup encertat +3p</span>
+        ${classGrup==='Conjunt'?'':`<span><b>${classGrup}</b>: ${DATA.equips_jugadors[classGrup].join(', ')}</span>`}
       </div>
     </div>`;
+  p.querySelectorAll('.gtab').forEach(b=>b.onclick=()=>{classGrup=b.dataset.grup;renderClassificacio();});
 }
 
 // ================= GRUPS =================
