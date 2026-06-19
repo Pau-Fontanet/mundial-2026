@@ -385,13 +385,15 @@ function renderClassificacio(){
       <table>
         <thead><tr>
           <th class="rank">#</th><th>Jugador</th>
-          <th class="num">Total</th><th class="num">Partits</th><th class="num">Grups</th>
+          <th class="num">Total</th>
+          <th class="num" title="Punts obtinguts encertant resultats de partits">Pts partits</th>
+          <th class="num" title="Punts obtinguts encertant el podi dels grups">Pts grups</th>
           <th class="num">Exactes</th><th class="num">1X2</th><th class="num">Grups OK</th>
         </tr></thead>
         <tbody>${rows}</tbody>
       </table>
       <div class="legend">
-        <span><b>Total</b> = Partits + Grups</span>
+        <span><b>Total</b> = <b>Pts partits</b> + <b>Pts grups</b> (punts que ha fet cada jugador per partits i per grups)</span>
         <span>Exacte 3p · Guanyador/empat 1p · Grup encertat +3p</span>
       </div>
     </div>`;
