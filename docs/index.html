@@ -325,7 +325,12 @@ function renderPartits(){
       html = `<div class="card"><div class="empty">${j} encara no ha apuntat cap resultat de partit.<br>
         <span class="muted">Apunta'ls amb: <code>python apunta.py partits "${j}" 1=2-1 ...</code></span></div></div>`;
     } else {
-      html = '<div class="card"><table><tbody>';
+      html = `<div class="card"><table><thead><tr>
+          <th>Partit</th>
+          <th class="num">Predicció</th>
+          <th class="num">Resultat</th>
+          <th class="num">Punts</th>
+        </tr></thead><tbody>`;
       for(const m of DATA.partits){
         const pred = preds[m.id];
         const real = DATA.resultats[m.id];
