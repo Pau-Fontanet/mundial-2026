@@ -246,42 +246,65 @@ PLANTILLA = r"""<!DOCTYPE html>
 <title>Porra Mundial 2026</title>
 <style>
   :root{
-    --bg:#0f1320; --card:#1a2032; --card2:#222a40; --line:#2c3550;
-    --txt:#e9edf6; --muted:#97a1bd; --accent:#3ddc97; --accent2:#ffd166;
+    --bg:#0b0e1a; --card:#161c2e; --card2:#1f2740; --line:#2c3550;
+    --txt:#eef1fa; --muted:#9aa3c0; --accent:#3ddc97; --accent2:#ffd166;
     --gold:#ffd166; --green:#2ecc71; --yellow:#f1c40f;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(160deg,#0d1019,#141a2b);color:var(--txt);
-       font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
-  header{padding:28px 20px 10px;text-align:center}
-  h1{margin:0;font-size:30px;letter-spacing:.5px}
-  h1 .ball{filter:drop-shadow(0 0 8px #ffd16688)}
-  .sub{color:var(--muted);margin-top:6px;font-size:14px}
+  body{margin:0;color:var(--txt);min-height:100vh;
+       font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+       background:
+         radial-gradient(900px 500px at 12% -8%, #1d6e5022, transparent 60%),
+         radial-gradient(800px 480px at 92% 0%, #b98a1a22, transparent 55%),
+         linear-gradient(165deg,#0a0d18,#10162a 55%,#0b0f1d);
+       background-attachment:fixed;}
+  header{position:relative;padding:42px 20px 22px;text-align:center;overflow:hidden;
+         border-bottom:1px solid var(--line);
+         background:linear-gradient(180deg,#141b30aa,transparent);}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;
+         background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);
+         opacity:.8}
+  h1{margin:0;font-size:34px;font-weight:800;letter-spacing:.4px;
+     background:linear-gradient(92deg,#fff,#cfe9dd 40%,var(--accent2));
+     -webkit-background-clip:text;background-clip:text;color:transparent}
+  h1 .ball{-webkit-text-fill-color:initial;filter:drop-shadow(0 0 10px #ffd16699)}
+  .sub{color:var(--muted);margin-top:8px;font-size:14px;letter-spacing:.2px}
   .wrap{max-width:1100px;margin:0 auto;padding:0 16px 60px}
-  .tabs{display:flex;gap:8px;justify-content:center;margin:22px 0 8px;flex-wrap:wrap}
+  .tabs{display:flex;gap:8px;justify-content:center;margin:26px 0 8px;flex-wrap:wrap}
   .tab{background:var(--card);border:1px solid var(--line);color:var(--txt);
-       padding:10px 18px;border-radius:999px;cursor:pointer;font-size:15px;transition:.15s}
-  .tab:hover{border-color:var(--accent)}
-  .tab.active{background:var(--accent);color:#06281c;font-weight:700;border-color:var(--accent)}
+       padding:10px 18px;border-radius:999px;cursor:pointer;font-size:15px;
+       transition:.18s ease;box-shadow:0 2px 10px #0003}
+  .tab:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .tab.active{background:linear-gradient(135deg,var(--accent),#2bb87f);color:#06281c;
+       font-weight:700;border-color:transparent;box-shadow:0 6px 18px #2bb87f55}
   .gtabs{display:flex;gap:8px;justify-content:center;margin:16px 0 0;flex-wrap:wrap}
   .gtab{background:var(--card);border:1px solid var(--line);color:var(--txt);
-        padding:6px 16px;border-radius:999px;cursor:pointer;font-size:14px;transition:.15s}
-  .gtab:hover{border-color:var(--accent2)}
-  .gtab.active{background:var(--accent2);color:#3a2c00;font-weight:700;border-color:var(--accent2)}
-  .panel{display:none;animation:fade .25s}
+        padding:6px 16px;border-radius:999px;cursor:pointer;font-size:14px;transition:.18s ease}
+  .gtab:hover{border-color:var(--accent2);transform:translateY(-1px)}
+  .gtab.active{background:linear-gradient(135deg,var(--accent2),#e8b53e);color:#3a2c00;
+        font-weight:700;border-color:transparent;box-shadow:0 6px 18px #e8b53e44}
+  .panel{display:none;animation:fade .28s ease}
   .panel.active{display:block}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1}}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
-        padding:16px 18px;margin:16px 0;box-shadow:0 8px 30px #0006}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card{background:linear-gradient(180deg,#1b2236,#161c2e);border:1px solid var(--line);
+        border-radius:18px;padding:16px 18px;margin:16px 0;
+        box-shadow:0 10px 36px #0007, inset 0 1px 0 #ffffff0a}
   table{width:100%;border-collapse:collapse;font-size:14px}
-  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  th,td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  thead th{position:sticky;top:0;background:#1a2138;z-index:1}
   th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  tbody tr{transition:background .15s}
+  tbody tr:hover{background:#ffffff08}
   tr:last-child td{border-bottom:none}
   .num{text-align:right;font-variant-numeric:tabular-nums}
   .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700}
   .total{font-size:17px;font-weight:800;color:var(--accent)}
   .encerts{font-size:17px;font-weight:800;color:var(--accent2)}
   .rank{width:38px;text-align:center;font-weight:800;color:var(--muted)}
+  tbody tr.r1{background:linear-gradient(90deg,#ffd16614,transparent 70%)}
+  tbody tr.r2{background:linear-gradient(90deg,#cdd6e010,transparent 70%)}
+  tbody tr.r3{background:linear-gradient(90deg,#cd7f3210,transparent 70%)}
+  tbody tr.r1:hover,tbody tr.r2:hover,tbody tr.r3:hover{filter:brightness(1.15)}
   .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 2px}
   select,.toggle{background:var(--card2);color:var(--txt);border:1px solid var(--line);
          border-radius:10px;padding:9px 12px;font-size:14px;cursor:pointer}
@@ -388,7 +411,7 @@ function renderClassificacio(){
   const filtra = r => classGrup==='Conjunt' || (DATA.equips_jugadors[classGrup]||[]).includes(r.jugador);
   const t = DATA.classificacio.filter(filtra);
   let rows = t.map((r,i)=>`
-    <tr>
+    <tr class="${hiHaResultats&&i<3?'r'+(i+1):''}">
       <td class="rank">${medal(i)}</td>
       <td>${r.jugador}</td>
       <td class="num total">${r.punts}</td>
