@@ -168,6 +168,7 @@ def classificacio(jugadors, preds_partits, preds_grups, resultats, resultats_gru
         pp = preds_partits.get(jugador, {})
         pg = preds_grups.get(jugador, {})
         p_partits = exactes = guanyadors = jugats = 0
+        historial = []  # (pid, categoria) per calcular la ratxa
         for pid, real in resultats.items():
             if pid not in pp:
                 continue
@@ -176,11 +177,16 @@ def classificacio(jugadors, preds_partits, preds_grups, resultats, resultats_gru
             p_partits += pt
             if pt == PUNTS_EXACTE:
                 exactes += 1
+                historial.append((pid, "exact"))
             elif pt == PUNTS_GUANYADOR:
                 guanyadors += 1
+                historial.append((pid, "win"))
+            else:
+                historial.append((pid, "miss"))
         grups_ok = sum(
             1 for g, ordre in resultats_grups.items() if pg.get(g) == ordre
         )
+        forma = [cat for _, cat in sorted(historial)[-5:]]  # últims 5, antic → recent
         taula.append({
             "jugador": jugador,
             "punts": p_partits + grups_ok * PUNTS_GRUP,
@@ -190,6 +196,7 @@ def classificacio(jugadors, preds_partits, preds_grups, resultats, resultats_gru
             "guanyadors": guanyadors,
             "grups_ok": grups_ok,
             "partits_puntuats": jugats,
+            "forma": forma,
         })
     taula.sort(key=lambda r: (-r["punts"], -r["exactes"], -r["grups_ok"], r["jugador"]))
     return taula
@@ -248,7 +255,7 @@ PLANTILLA = r"""<!DOCTYPE html>
   :root{
     --bg:#0b0e1a; --card:#161c2e; --card2:#1f2740; --line:#2c3550;
     --txt:#eef1fa; --muted:#9aa3c0; --accent:#3ddc97; --accent2:#ffd166;
-    --gold:#ffd166; --green:#2ecc71; --yellow:#f1c40f;
+    --gold:#ffd166; --green:#2ecc71; --yellow:#f1c40f; --red:#e74c3c;
   }
   *{box-sizing:border-box}
   body{margin:0;color:var(--txt);min-height:100vh;
@@ -354,6 +361,12 @@ PLANTILLA = r"""<!DOCTYPE html>
   .legend span{display:inline-block;margin-right:14px}
   .legend span.medal{display:inline-flex;margin-right:4px}
   .dot{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:middle;margin-right:4px}
+  .forma{display:inline-flex;gap:3px;align-items:center}
+  .fdot{width:12px;height:12px;border-radius:3px;display:inline-block;vertical-align:middle;box-shadow:inset 0 0 0 1px #0003}
+  .fdot.exact{background:var(--green)}
+  .fdot.win{background:var(--yellow)}
+  .fdot.miss{background:var(--red)}
+  th.forma-h{white-space:nowrap}
   .stat{display:inline-flex;flex-direction:column;align-items:center;background:var(--card2);
         border:1px solid var(--line);border-radius:12px;padding:8px 16px;margin:4px}
   .stat b{font-size:20px;color:var(--accent)}
@@ -420,6 +433,14 @@ const CLASS_COLS = [
   {key:'encerts',   label:'Encerts',    num:true,  val:r=>r.exactes+r.guanyadors,  cls:'encerts', title:"Total d'encerts: exactes + guanyador/empat"},
 ];
 let classSort = {key:'punts', dir:-1};   // -1 descendent, 1 ascendent
+const FORMA_TIT = {exact:'Exacte (+3)', win:'Encert 1X2 (+1)', miss:'Fallat (0)'};
+function formaHtml(r){
+  const f = r.forma || [];
+  if(!f.length) return '<span class="muted">·</span>';
+  return `<span class="forma">`
+    + f.map(c=>`<span class="fdot ${c}" title="${FORMA_TIT[c]||''}"></span>`).join('')
+    + `</span>`;
+}
 function renderClassificacio(){
   const p = document.getElementById('classificacio');
   const hiHaResultats = Object.keys(DATA.resultats).length || Object.keys(DATA.resultats_grups).length;
@@ -437,11 +458,13 @@ function renderClassificacio(){
   const arrow = c => c.key===classSort.key ? (classSort.dir<0?' ▾':' ▴') : '';
   const head = `<th class="rank">#</th>` + CLASS_COLS.map(c=>
     `<th class="sortable${c.num?' num':''}${c.key===classSort.key?' sorted':''}" data-key="${c.key}"`
-    + `${c.title?` title="${c.title}"`:''}>${c.label}<span class="sarrow">${arrow(c)}</span></th>`).join('');
+    + `${c.title?` title="${c.title}"`:''}>${c.label}<span class="sarrow">${arrow(c)}</span></th>`).join('')
+    + `<th class="forma-h" title="Últims 5 partits (antic → recent)">Ratxa</th>`;
   let rows = t.map((r,i)=>`
     <tr class="${hiHaResultats&&i<3?'r'+(i+1):''}">
       <td class="rank">${medal(i)}</td>`
     + CLASS_COLS.map(c=>`<td class="${c.num?'num':''}${c.cls?' '+c.cls:''}">${c.val(r)}</td>`).join('')
+    + `<td>${formaHtml(r)}</td>`
     + `</tr>`).join('');
   p.innerHTML = `
     <div class="gtabs">${grupsBtns}</div>
@@ -455,6 +478,10 @@ function renderClassificacio(){
         <span>Toca una capçalera per ordenar.</span>
         <span><b>Total</b> = <b>Pts partits</b> + <b>Pts grups</b> (punts que ha fet cada jugador per partits i per grups)</span>
         <span>Exacte 3p · Guanyador/empat 1p · Grup encertat +3p</span>
+        <span><b>Ratxa</b> = últims 5 partits (antic → recent):
+          <span class="fdot exact"></span> exacte
+          <span class="fdot win"></span> 1X2
+          <span class="fdot miss"></span> fallat</span>
         ${classGrup==='Conjunt'?'':`<span><b>${classGrup}</b>: ${DATA.equips_jugadors[classGrup].join(', ')}</span>`}
       </div>
     </div>`;
