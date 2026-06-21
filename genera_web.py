@@ -35,7 +35,7 @@ PUNTS_GRUP = 3
 
 # Grups de jugadors per filtrar la classificació. El Pau forma part dels dos.
 EQUIPS_JUGADORS = {
-    "Ofi": ["Amado", "Jordi", "Nil", "Pablo", "Pau"],
+    "Ofi": ["Albi", "Amado", "Jordi", "Nil", "Pablo", "Pau"],
     "Ñeris": ["Albi", "Axel", "Gilbert", "Oscar", "Pau"],
 }
 
