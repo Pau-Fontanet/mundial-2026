@@ -609,9 +609,12 @@ function renderPropers(){
     let rows = '';
     for(const m of ms){
       const ko = new Date(`${m.data}T${m.hora||'00:00'}`);   // hora peninsular = hora local del navegador a ES
-      const enJoc = !isNaN(ko) && now >= ko;
+      const finalitzat = !isNaN(ko) && now >= new Date(ko.getTime() + 2*60*60*1000);
+      const enJoc = !isNaN(ko) && now >= ko && !finalitzat;
       const dm = `${m.data.slice(8,10)}/${m.data.slice(5,7)}`;
-      const tag = enJoc
+      const tag = finalitzat
+        ? `<span class="live">finalitzat</span>`
+        : enJoc
         ? `<span class="live play">en joc</span>`
         : `<span class="live">${dm} · ${m.hora||''}</span>`;
       const cells = jug.map(j=>{
@@ -628,7 +631,8 @@ function renderPropers(){
         <thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>
       <div class="legend">Marcador que ha dit cada jugador per als propers partits ·
         <span class="muted">·</span> = sense predicció ·
-        <span class="live play">en joc</span> = ja ha començat (hora peninsular)</div>
+        <span class="live play">en joc</span> = ja ha començat (hora peninsular) ·
+        <span class="live">finalitzat</span> = han passat +2h de l'inici</div>
     </div>`;
   };
   document.getElementById('selN').onchange = draw;
