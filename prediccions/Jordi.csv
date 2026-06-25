@@ -53,24 +53,24 @@
 52,2026-06-25,00:00,Fase de grups,Morocco,Haiti,2,0
 53,2026-06-25,03:00,Fase de grups,Czech Republic,Mexico,1,2
 54,2026-06-25,03:00,Fase de grups,South Africa,South Korea,1,1
-55,2026-06-25,22:00,Fase de grups,Curaçao,Ivory Coast,,
-56,2026-06-25,22:00,Fase de grups,Ecuador,Germany,,
-57,2026-06-26,01:00,Fase de grups,Japan,Sweden,,
-58,2026-06-26,01:00,Fase de grups,Tunisia,Netherlands,,
-59,2026-06-26,04:00,Fase de grups,Turkey,USA,,
-60,2026-06-26,04:00,Fase de grups,Paraguay,Australia,,
-61,2026-06-26,21:00,Fase de grups,Norway,France,,
-62,2026-06-26,21:00,Fase de grups,Senegal,Iraq,,
-63,2026-06-27,02:00,Fase de grups,Cape Verde,Saudi Arabia,,
-64,2026-06-27,02:00,Fase de grups,Uruguay,Spain,,
-65,2026-06-27,05:00,Fase de grups,Egypt,Iran,,
-66,2026-06-27,05:00,Fase de grups,New Zealand,Belgium,,
-67,2026-06-27,23:00,Fase de grups,Panama,England,,
-68,2026-06-27,23:00,Fase de grups,Croatia,Ghana,,
-69,2026-06-28,01:30,Fase de grups,Colombia,Portugal,,
-70,2026-06-28,01:30,Fase de grups,DR Congo,Uzbekistan,,
-71,2026-06-28,04:00,Fase de grups,Algeria,Austria,,
-72,2026-06-28,04:00,Fase de grups,Jordan,Argentina,,
+55,2026-06-25,22:00,Fase de grups,Curaçao,Ivory Coast,0,1
+56,2026-06-25,22:00,Fase de grups,Ecuador,Germany,1,2
+57,2026-06-26,01:00,Fase de grups,Japan,Sweden,1,1
+58,2026-06-26,01:00,Fase de grups,Tunisia,Netherlands,0,2
+59,2026-06-26,04:00,Fase de grups,Turkey,USA,1,1
+60,2026-06-26,04:00,Fase de grups,Paraguay,Australia,1,1
+61,2026-06-26,21:00,Fase de grups,Norway,France,1,1
+62,2026-06-26,21:00,Fase de grups,Senegal,Iraq,0,2
+63,2026-06-27,02:00,Fase de grups,Cape Verde,Saudi Arabia,1,0
+64,2026-06-27,02:00,Fase de grups,Uruguay,Spain,1,3
+65,2026-06-27,05:00,Fase de grups,Egypt,Iran,0,2
+66,2026-06-27,05:00,Fase de grups,New Zealand,Belgium,1,1
+67,2026-06-27,23:00,Fase de grups,Panama,England,0,2
+68,2026-06-27,23:00,Fase de grups,Croatia,Ghana,2,0
+69,2026-06-28,01:30,Fase de grups,Colombia,Portugal,1,2
+70,2026-06-28,01:30,Fase de grups,DR Congo,Uzbekistan,0,0
+71,2026-06-28,04:00,Fase de grups,Algeria,Austria,0,1
+72,2026-06-28,04:00,Fase de grups,Jordan,Argentina,0,2
 73,2026-06-28,21:00,Setzens de final,2A,2B,,
 74,2026-06-29,19:00,Setzens de final,1C,2F,,
 75,2026-06-29,22:30,Setzens de final,1E,3A/B/C/D/F,,
