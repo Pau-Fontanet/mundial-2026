@@ -1,16 +1,16 @@
 ﻿grup,equip,posicio_final
-Group A,Mexico,
-Group A,South Africa,
-Group A,South Korea,
-Group A,Czech Republic,
-Group B,Canada,
-Group B,Bosnia & Herzegovina,
-Group B,Qatar,
-Group B,Switzerland,
-Group C,Brazil,
-Group C,Morocco,
-Group C,Haiti,
-Group C,Scotland,
+Group A,Mexico,1
+Group A,South Africa,2
+Group A,South Korea,3
+Group A,Czech Republic,4
+Group B,Canada,2
+Group B,Bosnia & Herzegovina,3
+Group B,Qatar,4
+Group B,Switzerland,1
+Group C,Brazil,1
+Group C,Morocco,2
+Group C,Haiti,4
+Group C,Scotland,3
 Group D,USA,
 Group D,Paraguay,
 Group D,Australia,
