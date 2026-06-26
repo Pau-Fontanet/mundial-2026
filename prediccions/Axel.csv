@@ -59,12 +59,12 @@
 58,2026-06-26,01:00,Fase de grups,Tunisia,Netherlands,1,2
 59,2026-06-26,04:00,Fase de grups,Turkey,USA,2,2
 60,2026-06-26,04:00,Fase de grups,Paraguay,Australia,1,2
-61,2026-06-26,21:00,Fase de grups,Norway,France,,
-62,2026-06-26,21:00,Fase de grups,Senegal,Iraq,,
-63,2026-06-27,02:00,Fase de grups,Cape Verde,Saudi Arabia,,
-64,2026-06-27,02:00,Fase de grups,Uruguay,Spain,,
-65,2026-06-27,05:00,Fase de grups,Egypt,Iran,,
-66,2026-06-27,05:00,Fase de grups,New Zealand,Belgium,,
+61,2026-06-26,21:00,Fase de grups,Norway,France,1,2
+62,2026-06-26,21:00,Fase de grups,Senegal,Iraq,3,0
+63,2026-06-27,02:00,Fase de grups,Cape Verde,Saudi Arabia,1,1
+64,2026-06-27,02:00,Fase de grups,Uruguay,Spain,1,2
+65,2026-06-27,05:00,Fase de grups,Egypt,Iran,2,1
+66,2026-06-27,05:00,Fase de grups,New Zealand,Belgium,0,2
 67,2026-06-27,23:00,Fase de grups,Panama,England,,
 68,2026-06-27,23:00,Fase de grups,Croatia,Ghana,,
 69,2026-06-28,01:30,Fase de grups,Colombia,Portugal,,
