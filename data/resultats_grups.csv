@@ -23,18 +23,18 @@ Group F,Netherlands,1
 Group F,Japan,2
 Group F,Sweden,3
 Group F,Tunisia,4
-Group G,Belgium,
-Group G,Egypt,
-Group G,Iran,
-Group G,New Zealand,
-Group H,Spain,
-Group H,Cape Verde,
-Group H,Saudi Arabia,
-Group H,Uruguay,
-Group I,France,
-Group I,Senegal,
-Group I,Iraq,
-Group I,Norway,
+Group G,Belgium,1
+Group G,Egypt,2
+Group G,Iran,3
+Group G,New Zealand,4
+Group H,Spain,1
+Group H,Cape Verde,2
+Group H,Saudi Arabia,4
+Group H,Uruguay,3
+Group I,France,1
+Group I,Senegal,3
+Group I,Iraq,4
+Group I,Norway,2
 Group J,Argentina,
 Group J,Algeria,
 Group J,Austria,
