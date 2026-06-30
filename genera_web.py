@@ -87,10 +87,16 @@ def parse_gols(fila: dict) -> "tuple[int, int] | None":
         return None
 
 
-def carrega_resultats() -> dict[int, "tuple[int, int]"]:
-    res = {}
+def carrega_resultats() -> "tuple[dict[int, tuple[int, int]], dict[int, str]]":
+    """Retorna (resultats_90min, penals).
+
+    'resultats_90min' són els gols als 90' (els que compten per puntuar).
+    'penals' és el marcador de la tanda (equip1-equip2) per als partits que
+    es van decidir des del punt de penal; només per mostrar-lo, no puntua.
+    """
+    res, penals = {}, {}
     if not RESULTATS.exists():
-        return res
+        return res, penals
     with RESULTATS.open(encoding="utf-8-sig", newline="") as f:
         for fila in csv.DictReader(f):
             try:
@@ -100,7 +106,10 @@ def carrega_resultats() -> dict[int, "tuple[int, int]"]:
             gols = parse_gols(fila)
             if gols is not None:
                 res[pid] = gols
-    return res
+                pen = (fila.get("penals") or "").strip()
+                if pen:
+                    penals[pid] = pen
+    return res, penals
 
 
 def carrega_ordre_grups(path: Path) -> dict[str, list[str]]:
@@ -205,7 +214,7 @@ def classificacio(jugadors, preds_partits, preds_grups, resultats, resultats_gru
 def main() -> None:
     partits = carrega_partits()
     grups = equips_per_grup(partits)
-    resultats = carrega_resultats()
+    resultats, penals = carrega_resultats()
     resultats_grups = carrega_ordre_grups(RESULTATS_GRUPS)
     preds_partits = carrega_preds_partits()
     preds_grups = carrega_preds_grups()
@@ -228,6 +237,7 @@ def main() -> None:
                           for j, d in preds_partits.items()},
         "preds_grups": preds_grups,
         "resultats": {str(k): list(v) for k, v in resultats.items()},
+        "penals": {str(k): v for k, v in penals.items()},
         "resultats_grups": resultats_grups,
         "classificacio": taula,
         "equips_jugadors": EQUIPS_JUGADORS,
@@ -680,7 +690,10 @@ function renderPartits(){
           else {cls='sc-zero';pts='0';}
         }
         const predTxt = pred?`<b>${pred[0]}-${pred[1]}</b>`:'<span class="muted">—</span>';
-        const realTxt = real?`${real[0]}-${real[1]}`:'<span class="muted">·</span>';
+        const pen = DATA.penals && DATA.penals[m.id];
+        const realTxt = real
+          ? (pen ? `${real[0]} <span class="muted">(${pen})</span> ${real[1]}` : `${real[0]}-${real[1]}`)
+          : '<span class="muted">·</span>';
         html += `<tr class="${cls}">
           <td>${teamHtml(m.equip1)} <span class="muted">vs</span> ${teamHtml(m.equip2)}
               <div class="muted" style="font-size:11px">#${m.id} · ${m.data} ${m.hora}</div></td>

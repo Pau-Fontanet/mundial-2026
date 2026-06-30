@@ -83,7 +83,7 @@ def parse_gols(fila: dict) -> "tuple[int, int] | None":
 
 
 def crea_resultats_buit(partits: dict[int, dict]) -> None:
-    camps = ["partit_id", "data", "equip1", "equip2", "gol1", "gol2"]
+    camps = ["partit_id", "data", "equip1", "equip2", "gol1", "gol2", "penals"]
     with RESULTATS.open("w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=camps)
         w.writeheader()
@@ -96,6 +96,7 @@ def crea_resultats_buit(partits: dict[int, dict]) -> None:
                     "equip2": p["equip2"],
                     "gol1": "",
                     "gol2": "",
+                    "penals": "",
                 }
             )
     print(f"Creat {RESULTATS} buit. Omple gol1/gol2 a mesura que es juguin els partits.\n")
