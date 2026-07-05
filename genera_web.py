@@ -55,6 +55,32 @@ BANDERES = {
     "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Croatia": "🇭🇷", "Ghana": "🇬🇭", "Panama": "🇵🇦",
 }
 
+# Quadre d'eliminatòries en espai dels nostres id (73..104). 'fonts' diu de quins
+# dos partits surt cada eliminatòria: [[id_equip1, tipus], [id_equip2, tipus]] on
+# tipus 'W' = guanyador i 'L' = perdedor (només el 3r i 4t lloc fa servir 'L').
+# Compensa que els codis W../L.. d'openfootball es refereixen als seus números
+# originals, no als nostres id reordenats per data (verificat amb worldcup_raw.json).
+ELIMINATORIES = {
+    "rondes": [
+        {"titol": "Setzens", "ids": list(range(73, 89))},
+        {"titol": "Vuitens", "ids": list(range(89, 97))},
+        {"titol": "Quarts", "ids": [97, 98, 99, 100]},
+        {"titol": "Semis", "ids": [101, 102]},
+        {"titol": "Final", "ids": [104]},
+    ],
+    "tercer": 103,
+    "fonts": {
+        89: [[73, "W"], [76, "W"]], 90: [[75, "W"], [78, "W"]],
+        91: [[74, "W"], [77, "W"]], 92: [[79, "W"], [80, "W"]],
+        93: [[84, "W"], [83, "W"]], 94: [[82, "W"], [81, "W"]],
+        95: [[87, "W"], [86, "W"]], 96: [[85, "W"], [88, "W"]],
+        97: [[90, "W"], [89, "W"]], 98: [[93, "W"], [94, "W"]],
+        99: [[91, "W"], [92, "W"]], 100: [[95, "W"], [96, "W"]],
+        101: [[97, "W"], [98, "W"]], 102: [[99, "W"], [100, "W"]],
+        104: [[101, "W"], [102, "W"]], 103: [[101, "L"], [102, "L"]],
+    },
+}
+
 
 def signe(a: int, b: int) -> int:
     return (a > b) - (a < b)
@@ -241,6 +267,7 @@ def main() -> None:
         "resultats_grups": resultats_grups,
         "classificacio": taula,
         "equips_jugadors": EQUIPS_JUGADORS,
+        "eliminatories": ELIMINATORIES,
     }
 
     WEB.mkdir(exist_ok=True)
@@ -386,6 +413,47 @@ PLANTILLA = r"""<!DOCTYPE html>
   .stat b{font-size:20px;color:var(--accent)}
   .stat small{color:var(--muted)}
   .stats{display:flex;justify-content:center;flex-wrap:wrap;margin-top:6px}
+
+  /* ---- Eliminatòries (bracket) ---- */
+  .bracket-wrap{overflow-x:auto;overflow-y:hidden;padding:4px 2px 14px}
+  .bracket-inner{position:relative;width:max-content}
+  svg.connectors{position:absolute;top:0;left:0;pointer-events:none;z-index:0;overflow:visible}
+  svg.connectors .conn{fill:none;stroke:var(--line);stroke-width:2}
+  svg.connectors .conn-l{stroke:#3d4763;stroke-dasharray:5 5}
+  .bracket{position:relative;z-index:1;display:flex;gap:30px;align-items:stretch;min-height:900px}
+  .mt-col{display:flex;flex-direction:column;min-width:182px;width:182px}
+  .mt-h{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--accent2);
+        text-align:center;margin-bottom:12px;white-space:nowrap}
+  .mt-col-body{flex:1;display:flex;flex-direction:column;justify-content:space-around;gap:10px}
+  .mt-third{justify-content:flex-end}
+  .mt-third .mt-col-body{flex:none;justify-content:center;margin-top:auto}
+  .mt-card{background:linear-gradient(180deg,#1c2338,#171d2f);border:1px solid var(--line);
+        border-radius:11px;padding:7px 9px;cursor:pointer;transition:.15s ease;box-shadow:0 4px 14px #0004}
+  .mt-card:hover{border-color:var(--accent);transform:translateY(-1px);box-shadow:0 8px 20px #0006}
+  .mt-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:3px 1px;font-size:13px}
+  .mt-row .tm{display:flex;align-items:center;gap:6px;overflow:hidden;min-width:0}
+  .mt-row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mt-row .sc{font-variant-numeric:tabular-nums;font-weight:800;color:var(--muted);flex:none}
+  .mt-row.mt-win .nm{color:var(--accent);font-weight:700}
+  .mt-row.mt-win .sc{color:var(--accent)}
+  .mt-row.mt-lose{opacity:.45}
+  .mt-row.mt-ph .nm{color:var(--muted);font-style:italic;font-size:11.5px}
+  .mt-pen{font-size:10.5px;color:var(--muted);text-align:right;margin-top:1px}
+  .mt-when{font-size:10.5px;color:var(--muted);text-align:center;margin-top:4px;
+        border-top:1px dashed var(--line);padding-top:3px}
+  /* popover de prediccions */
+  .pop{position:absolute;z-index:100;width:222px;max-height:300px;overflow:auto;
+       background:linear-gradient(180deg,#1e2740,#161c2e);border:1px solid var(--accent);
+       border-radius:12px;box-shadow:0 16px 40px #000b;padding:11px 12px;animation:fade .16s ease}
+  .pop-title{font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.35}
+  .pop-res{font-size:15px;font-weight:800;color:var(--accent2);margin-bottom:6px;font-variant-numeric:tabular-nums}
+  .pop-res.muted{color:var(--muted);font-size:12px;font-weight:600}
+  .pop-sub{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);
+        margin:2px 0 5px;border-top:1px solid var(--line);padding-top:6px}
+  .prow{display:flex;justify-content:space-between;gap:10px;padding:3px 5px;border-radius:6px;font-size:12.5px}
+  .prow .num{font-variant-numeric:tabular-nums;font-weight:700;flex:none}
+  .prow small{font-weight:700;opacity:.8;margin-left:2px}
+  .prow.muted .num{color:var(--muted);font-weight:400}
 </style>
 </head>
 <body>
@@ -399,11 +467,13 @@ PLANTILLA = r"""<!DOCTYPE html>
     <button class="tab active" data-tab="classificacio">Classificació</button>
     <button class="tab" data-tab="propers">Propers</button>
     <button class="tab" data-tab="grups">Grups</button>
+    <button class="tab" data-tab="eliminatories">Eliminatòries</button>
     <button class="tab" data-tab="partits">Partits</button>
   </div>
   <div class="panel active" id="classificacio"></div>
   <div class="panel" id="propers"></div>
   <div class="panel" id="grups"></div>
+  <div class="panel" id="eliminatories"></div>
   <div class="panel" id="partits"></div>
 </div>
 
@@ -431,6 +501,7 @@ document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
   t.classList.add('active');
   document.getElementById(t.dataset.tab).classList.add('active');
+  if(t.dataset.tab==='eliminatories') requestAnimationFrame(drawConnectors);
 });
 
 // ================= CLASSIFICACIÓ =================
@@ -714,9 +785,184 @@ function renderPartits(){
   draw();
 }
 
+// ================= ELIMINATÒRIES (bracket) =================
+const P_BY_ID = {};
+DATA.partits.forEach(p=>P_BY_ID[p.id]=p);
+const ELIM = DATA.eliminatories;
+const FONTS = ELIM.fonts;
+const CHILD = {};   // id_origen -> [{tid, slot, type}]
+Object.entries(FONTS).forEach(([tid, srcs])=>{
+  srcs.forEach((s, slot)=>{ (CHILD[s[0]] = CHILD[s[0]] || []).push({tid:+tid, slot, type:s[1]}); });
+});
+const ROUND_OF = {};
+ELIM.rondes.forEach(r=>r.ids.forEach(id=>ROUND_OF[id]=r.titol));
+ROUND_OF[ELIM.tercer] = '3r i 4t';
+const isCode = s => /^[WL]\d+$/.test(s);
+const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const res = id => DATA.resultats[String(id)] || null;
+const penOf = id => DATA.penals[String(id)] || '';
+
+// Guanyador d'un partit: pel resultat (90'), penals numèrics, o deduït del partit
+// següent ja resolt; per empats amb nota de text, mira el nom dins la nota.
+function backDerive(id){
+  const ch = (CHILD[id]||[]).find(c=>c.type==='W');
+  if(!ch) return null;
+  const cm = P_BY_ID[ch.tid]; if(!cm) return null;
+  const ct = ch.slot===0 ? cm.equip1 : cm.equip2;
+  if(!ct || isCode(ct)) return null;
+  const m = P_BY_ID[id];
+  if(m.equip1===ct) return 0;
+  if(m.equip2===ct) return 1;
+  return null;
+}
+function winnerSlot(id){
+  const r = res(id); if(!r) return null;
+  if(r[0]>r[1]) return 0;
+  if(r[1]>r[0]) return 1;
+  const pen = penOf(id);
+  const mn = pen.match(/^\s*(\d+)\s*-\s*(\d+)\s*$/);
+  if(mn) return (+mn[1] > +mn[2]) ? 0 : 1;
+  const bd = backDerive(id); if(bd!=null) return bd;
+  const m = P_BY_ID[id], pn = norm(pen);
+  if(pn){
+    if(!isCode(m.equip1) && pn.includes(norm(m.equip1))) return 0;
+    if(!isCode(m.equip2) && pn.includes(norm(m.equip2))) return 1;
+  }
+  return null;
+}
+function advancer(id, wantLoser){
+  const ws = winnerSlot(id); if(ws==null) return null;
+  return teamName(id, wantLoser ? (ws===0?1:0) : ws).name;
+}
+// Nom d'un equip d'un partit: real si es coneix, si no un placeholder curt.
+function teamName(id, slot){
+  const m = P_BY_ID[id];
+  const raw = slot===0 ? m.equip1 : m.equip2;
+  if(!isCode(raw)) return {name:raw, placeholder:false};
+  const src = FONTS[String(id)][slot];
+  const adv = advancer(src[0], src[1]==='L');
+  if(adv) return {name:adv, placeholder:false};
+  const a = teamName(src[0],0), b = teamName(src[0],1);
+  const lbl = (!a.placeholder && !b.placeholder) ? (a.name+'–'+b.name) : (ROUND_OF[src[0]]||('#'+src[0]));
+  return {name:(src[1]==='L'?'Perdedor ':'Guanyador ')+lbl, placeholder:true};
+}
+function matchCard(id){
+  const m = P_BY_ID[id], r = res(id), pen = penOf(id), ws = winnerSlot(id);
+  const t0 = teamName(id,0), t1 = teamName(id,1);
+  const row = (t, slot, g)=>{
+    const cls = t.placeholder ? 'mt-ph' : (ws===slot ? 'mt-win' : (ws!=null ? 'mt-lose' : ''));
+    const fl = t.placeholder ? '' : `<span class="flag">${B[t.name]||''}</span>`;
+    const sc = r ? `<span class="sc">${g}</span>` : '';
+    return `<div class="mt-row ${cls}"><span class="tm">${fl}<span class="nm">${t.name}</span></span>${sc}</div>`;
+  };
+  const foot = r
+    ? (pen ? `<div class="mt-pen">${pen}</div>` : '')
+    : `<div class="mt-when">${m.data.slice(8,10)}/${m.data.slice(5,7)} · ${m.hora||''}</div>`;
+  return `<div class="mt-card" data-mid="${id}">${row(t0,0,r?r[0]:'')}${row(t1,1,r?r[1]:'')}${foot}</div>`;
+}
+function renderEliminatories(){
+  const p = document.getElementById('eliminatories');
+  const cols = ELIM.rondes.map(rnd=>
+    `<div class="mt-col"><div class="mt-h">${rnd.titol}</div>`
+    + `<div class="mt-col-body">${rnd.ids.map(matchCard).join('')}</div></div>`).join('');
+  const third = `<div class="mt-col mt-third"><div class="mt-h">3r i 4t</div>`
+    + `<div class="mt-col-body">${matchCard(ELIM.tercer)}</div></div>`;
+  p.innerHTML = `
+    <div class="legend" style="margin:6px 2px 12px">
+      Quadre d'eliminatòries · <b>clica un partit</b> per veure les prediccions dels jugadors ·
+      <span style="color:var(--accent);font-weight:700">●</span> guanyador ·
+      els partits sense jugar mostren la data i el rival previst.
+    </div>
+    <div class="bracket-wrap"><div class="bracket-inner">
+      <svg class="connectors"></svg>
+      <div class="bracket">${cols}${third}</div>
+    </div></div>`;
+  p.querySelectorAll('.mt-card').forEach(c=>
+    c.addEventListener('click', ev=>{ ev.stopPropagation(); openPop(c); }));
+  requestAnimationFrame(drawConnectors);
+}
+function drawConnectors(){
+  const inner = document.querySelector('#eliminatories .bracket-inner');
+  const svg = inner && inner.querySelector('svg.connectors');
+  if(!inner || !svg) return;
+  const ir = inner.getBoundingClientRect();
+  if(ir.width===0) return;                       // panell amagat: encara no es pot mesurar
+  svg.setAttribute('width', inner.offsetWidth);
+  svg.setAttribute('height', inner.offsetHeight);
+  const card = id => inner.querySelector(`.mt-card[data-mid="${id}"]`);
+  let paths = '';
+  Object.keys(FONTS).forEach(tid=>{
+    const tgt = card(tid); if(!tgt) return;
+    const tr = tgt.getBoundingClientRect();
+    const x2 = tr.left - ir.left, y2 = tr.top - ir.top + tr.height/2;
+    FONTS[tid].forEach(s=>{
+      const sc = card(s[0]); if(!sc) return;
+      const sr = sc.getBoundingClientRect();
+      const x1 = sr.right - ir.left, y1 = sr.top - ir.top + sr.height/2;
+      const mx = (x1+x2)/2;
+      paths += `<path class="conn${s[1]==='L'?' conn-l':''}" d="M${x1} ${y1} C ${mx} ${y1} ${mx} ${y2} ${x2} ${y2}"/>`;
+    });
+  });
+  svg.innerHTML = paths;
+}
+// ---- popover
+let curPop = null;
+function closePop(){ if(curPop){ curPop.remove(); curPop=null; } }
+function openPop(cardEl){
+  closePop();
+  const id = +cardEl.dataset.mid;
+  const pop = el(`<div class="pop">${popContent(id)}</div>`);
+  pop.addEventListener('click', e=>e.stopPropagation());
+  document.body.appendChild(pop);
+  const cr = cardEl.getBoundingClientRect();
+  const pw = pop.offsetWidth, ph = pop.offsetHeight;
+  let left = cr.right + 10;
+  if(left + pw > window.innerWidth - 8) left = cr.left - pw - 10;   // no hi cap a la dreta: a l'esquerra
+  if(left < 8) left = 8;
+  let top = cr.top + cr.height/2 - ph/2;
+  top = Math.max(8, Math.min(top, window.innerHeight - ph - 8));
+  pop.style.left = (left + window.scrollX) + 'px';
+  pop.style.top  = (top + window.scrollY) + 'px';
+  curPop = pop;
+}
+function popContent(id){
+  const m = P_BY_ID[id], r = res(id), pen = penOf(id), ws = winnerSlot(id);
+  const t0 = teamName(id,0), t1 = teamName(id,1);
+  const nm = (t, slot)=>{
+    const f = t.placeholder ? '' : `${B[t.name]||''} `;
+    const w = ws===slot ? ' style="color:var(--accent);font-weight:700"' : '';
+    return `<span${w}>${f}${t.name}</span>`;
+  };
+  const resLine = r
+    ? `<div class="pop-res">${r[0]} ${pen?`<span class="muted">(${pen})</span>`:'-'} ${r[1]}</div>`
+    : `<div class="pop-res muted">Per jugar · ${m.data.slice(8,10)}/${m.data.slice(5,7)} ${m.hora||''}</div>`;
+  const rows = DATA.jugadors.map(j=>{
+    const pr = (DATA.preds_partits[j]||{})[String(id)];
+    if(!pr) return `<div class="prow muted"><span>${j}</span><span class="num">·</span></div>`;
+    let cls='', pts='';
+    if(r){
+      const exact = pr[0]===r[0] && pr[1]===r[1];
+      const sp = Math.sign(pr[0]-pr[1]), sr = Math.sign(r[0]-r[1]);
+      if(exact){ cls='sc-exact'; pts='+3'; }
+      else if(sp===sr){ cls='sc-win'; pts='+1'; }
+      else { cls=''; pts='0'; }
+    }
+    return `<div class="prow ${cls}"><span>${j}</span>`
+      + `<span class="num">${pr[0]}-${pr[1]}${pts?` <small>${pts}</small>`:''}</span></div>`;
+  }).join('');
+  return `<div class="pop-title">${nm(t0,0)} <span class="muted">vs</span> ${nm(t1,1)}</div>`
+    + `${resLine}<div class="pop-sub">Prediccions</div>${rows}`;
+}
+document.addEventListener('click', closePop);
+window.addEventListener('resize', ()=>{
+  closePop();
+  if(document.getElementById('eliminatories').classList.contains('active')) drawConnectors();
+});
+
 renderClassificacio();
 renderPropers();
 renderGrups();
+renderEliminatories();
 renderPartits();
 </script>
 </body>
