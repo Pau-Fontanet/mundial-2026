@@ -131,7 +131,10 @@
   .stats{display:flex;justify-content:center;flex-wrap:wrap;margin-top:6px}
 
   /* ---- Eliminatòries (bracket) ---- */
-  .bracket-wrap{overflow-x:auto;overflow-y:hidden;padding:4px 2px 14px}
+  .bracket-wrap{overflow-x:auto;overflow-y:hidden;padding:4px 2px 14px;
+        cursor:grab;scrollbar-width:none;-ms-overflow-style:none;user-select:none}
+  .bracket-wrap::-webkit-scrollbar{display:none}
+  .bracket-wrap.grabbing{cursor:grabbing}
   .bracket-inner{position:relative;width:max-content}
   svg.connectors{position:absolute;top:0;left:0;pointer-events:none;z-index:0;overflow:visible}
   svg.connectors .conn{fill:none;stroke:var(--line);stroke-width:2}
@@ -613,7 +616,30 @@ function renderEliminatories(){
     </div></div>`;
   p.querySelectorAll('.mt-card').forEach(c=>
     c.addEventListener('click', ev=>{ ev.stopPropagation(); openPop(c); }));
+  enableDragScroll(p.querySelector('.bracket-wrap'));
   requestAnimationFrame(drawConnectors);
+}
+// Permet moure el quadre arrossegant amb el ratolí (com un tàctil), sense
+// dependre de la barra de scroll. Si s'arrossega, no s'obre el popover.
+function enableDragScroll(w){
+  if(!w) return;
+  let down=false, moved=false, sx=0, sl=0;
+  w.addEventListener('mousedown', e=>{
+    down=true; moved=false; sx=e.pageX; sl=w.scrollLeft; w.classList.add('grabbing');
+  });
+  window.addEventListener('mousemove', e=>{
+    if(!down) return;
+    const dx = e.pageX - sx;
+    if(Math.abs(dx) > 4) moved=true;
+    w.scrollLeft = sl - dx;
+  });
+  const end = ()=>{ down=false; w.classList.remove('grabbing'); };
+  window.addEventListener('mouseup', end);
+  window.addEventListener('mouseleave', end);
+  // si hi ha hagut arrossegament, anul·la el clic (no obrir prediccions)
+  w.addEventListener('click', e=>{
+    if(moved){ e.stopPropagation(); e.preventDefault(); moved=false; }
+  }, true);
 }
 function drawConnectors(){
   const inner = document.querySelector('#eliminatories .bracket-inner');
