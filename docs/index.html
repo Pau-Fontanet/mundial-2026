@@ -576,11 +576,29 @@ function matchCard(id){
     : `<div class="mt-when">${m.data.slice(8,10)}/${m.data.slice(5,7)} · ${m.hora||''}</div>`;
   return `<div class="mt-card" data-mid="${id}">${row(t0,0,r?r[0]:'')}${row(t1,1,r?r[1]:'')}${foot}</div>`;
 }
+// Ordena cada ronda seguint l'arbre (DFS des de la final) perquè els dos
+// partits font de cada creuament quedin sempre adjacents verticalment.
+// Amb aquest ordre i el space-around de cada columna, cada partit queda
+// centrat entre els seus dos orígens i les línies no es creuen.
+function bracketOrder(){
+  const buckets = [];
+  const finalId = ELIM.rondes[ELIM.rondes.length-1].ids[0];
+  (function dfs(id, d){
+    (buckets[d] = buckets[d] || []).push(id);
+    const srcs = FONTS[String(id)];
+    if(srcs) srcs.forEach(s=>dfs(s[0], d+1));
+  })(finalId, 0);
+  buckets.reverse();               // [primera ronda … final]
+  return buckets;
+}
 function renderEliminatories(){
   const p = document.getElementById('eliminatories');
-  const cols = ELIM.rondes.map(rnd=>
-    `<div class="mt-col"><div class="mt-h">${rnd.titol}</div>`
-    + `<div class="mt-col-body">${rnd.ids.map(matchCard).join('')}</div></div>`).join('');
+  const order = bracketOrder();
+  const cols = ELIM.rondes.map((rnd,i)=>{
+    const ids = (order[i] && order[i].length===rnd.ids.length) ? order[i] : rnd.ids;
+    return `<div class="mt-col"><div class="mt-h">${rnd.titol}</div>`
+      + `<div class="mt-col-body">${ids.map(matchCard).join('')}</div></div>`;
+  }).join('');
   const third = `<div class="mt-col mt-third"><div class="mt-h">3r i 4t</div>`
     + `<div class="mt-col-body">${matchCard(ELIM.tercer)}</div></div>`;
   p.innerHTML = `
