@@ -82,6 +82,42 @@ ELIMINATORIES = {
 }
 
 
+def _ordena_bracket(elim: dict) -> None:
+    """Reordena els partits dins de cada ronda seguint l'arbre eliminatori
+    ('fonts') perquè les línies entre rondes no es creuin. Perquè no hi hagi
+    creuaments, l'ordre vertical d'una columna ha de coincidir amb l'ordre dels
+    seus dos partits d'origen a la columna anterior. Ho aconseguim ordenant cada
+    ronda per la posició de la seva primera fulla en un recorregut en profunditat
+    (DFS) del quadre de guanyadors, arrelat a la Final."""
+    fonts = {tid: srcs for tid, srcs in elim["fonts"].items()}
+    arrel = elim["rondes"][-1]["ids"][0]          # Final: única ronda amb 1 partit
+
+    fulles: list[int] = []
+
+    def dfs(nid: int) -> None:
+        srcs = fonts.get(nid)
+        if not srcs:                              # partit de la 1a ronda (fulla)
+            fulles.append(nid)
+            return
+        for src, _tipus in srcs:
+            dfs(src)
+
+    dfs(arrel)
+    pos = {mid: i for i, mid in enumerate(fulles)}
+
+    def clau(mid: int) -> int:                    # posició vertical del subarbre
+        srcs = fonts.get(mid)
+        if not srcs:
+            return pos[mid]
+        return min(clau(src) for src, _tipus in srcs)
+
+    for rnd in elim["rondes"]:
+        rnd["ids"].sort(key=clau)
+
+
+_ordena_bracket(ELIMINATORIES)
+
+
 def signe(a: int, b: int) -> int:
     return (a > b) - (a < b)
 
