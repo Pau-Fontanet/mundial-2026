@@ -1306,8 +1306,8 @@
     "data": "2026-07-14",
     "hora_es": "21:00",
     "datetime_es": "2026-07-14T21:00:00+02:00",
-    "equip1": "W97",
-    "equip2": "W98",
+    "equip1": "France",
+    "equip2": "Spain",
     "seu": "Dallas (Arlington)",
     "hora_local": "14:00 UTC-5",
     "ronda_original": "Semi-final"
@@ -1319,8 +1319,8 @@
     "data": "2026-07-15",
     "hora_es": "21:00",
     "datetime_es": "2026-07-15T21:00:00+02:00",
-    "equip1": "W99",
-    "equip2": "W100",
+    "equip1": "England",
+    "equip2": "Argentina",
     "seu": "Atlanta",
     "hora_local": "15:00 UTC-4",
     "ronda_original": "Semi-final"
