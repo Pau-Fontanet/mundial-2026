@@ -15,8 +15,10 @@ Tres vistes:
 Torna a executar-lo quan apuntis prediccions o omplis resultats per refrescar.
 """
 
+import base64
 import csv
 import json
+import mimetypes
 from collections import OrderedDict
 from pathlib import Path
 
@@ -28,6 +30,22 @@ RESULTATS_GRUPS = DATA / "resultats_grups.csv"
 PREDS = DIR / "prediccions"
 PREDS_GRUPS = DIR / "prediccions_grups"
 WEB = DIR / "docs"
+ASSETS = DIR / "assets"
+
+# Fotos dels jugadors (assets/<nom>.jpg/png). S'incrusten en base64 dins l'HTML
+# perquè el fitxer segueixi sent autocontingut. Per canviar-ne una, substitueix
+# el fitxer i torna a executar genera_web.py.
+def carrega_fotos() -> dict:
+    fotos = {}
+    if not ASSETS.is_dir():
+        return fotos
+    for f in ASSETS.iterdir():
+        if f.suffix.lower() not in (".jpg", ".jpeg", ".png", ".webp"):
+            continue
+        mime = mimetypes.guess_type(f.name)[0] or "image/jpeg"
+        b64 = base64.b64encode(f.read_bytes()).decode("ascii")
+        fotos[f.stem] = f"data:{mime};base64,{b64}"
+    return fotos
 
 PUNTS_EXACTE = 3
 PUNTS_GUANYADOR = 1
@@ -304,6 +322,7 @@ def main() -> None:
         "classificacio": taula,
         "equips_jugadors": EQUIPS_JUGADORS,
         "eliminatories": ELIMINATORIES,
+        "fotos": carrega_fotos(),
     }
 
     WEB.mkdir(exist_ok=True)
@@ -490,6 +509,70 @@ PLANTILLA = r"""<!DOCTYPE html>
   .prow .num{font-variant-numeric:tabular-nums;font-weight:700;flex:none}
   .prow small{font-weight:700;opacity:.8;margin-left:2px}
   .prow.muted .num{color:var(--muted);font-weight:400}
+
+  /* ---- Celebració del guanyador ---- */
+  #campio-overlay{position:fixed;inset:0;z-index:1000;display:none;
+       align-items:center;justify-content:center;padding:20px;overflow:hidden;
+       background:radial-gradient(circle at 50% 28%,#13223dee,#060912fb);
+       -webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);animation:ovfade .45s ease}
+  #campio-overlay.show{display:flex}
+  @keyframes ovfade{from{opacity:0}to{opacity:1}}
+  .campio-card{position:relative;max-width:520px;width:100%;text-align:center;
+       background:linear-gradient(180deg,#1d2544,#141a2c);
+       border:1px solid var(--gold);border-radius:24px;padding:36px 30px 28px;
+       box-shadow:0 30px 80px #000c,0 0 0 1px #ffffff08 inset,0 0 70px #ffd16626;
+       animation:campiopop .6s cubic-bezier(.2,1.35,.35,1)}
+  @keyframes campiopop{from{transform:scale(.72) translateY(28px);opacity:0}to{transform:none;opacity:1}}
+  .campio-close{position:absolute;top:12px;right:14px;background:none;border:none;
+       color:var(--muted);font-size:22px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px}
+  .campio-close:hover{color:var(--txt);background:#ffffff10}
+  .campio-trophy{font-size:76px;line-height:1;filter:drop-shadow(0 6px 16px #ffd16688);
+       animation:bob 2.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-11px) rotate(4deg)}}
+  .campio-foto{position:relative;width:172px;height:172px;margin:4px auto 6px;
+       animation:bob 3.4s ease-in-out infinite}
+  .campio-foto img{width:172px;height:172px;border-radius:14px;object-fit:cover;
+       box-shadow:0 12px 34px #000b,0 0 44px #ffd16640}
+  .campio-foto .espurna{position:absolute;font-size:24px;animation:twinkle 1.6s ease-in-out infinite}
+  .campio-foto .e1{top:-8px;right:-12px}
+  .campio-foto .e2{bottom:0;left:-16px;animation-delay:.5s}
+  .campio-foto .e3{top:-6px;left:-8px;animation-delay:.9s;font-size:18px}
+  @keyframes twinkle{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
+  .campio-mote{display:inline-block;margin:8px 0 4px;padding:5px 14px;border-radius:999px;
+       background:linear-gradient(135deg,#2a2140,#1c2440);border:1px solid var(--gold);
+       color:var(--gold);font-size:13.5px;font-weight:800;letter-spacing:.3px}
+  .campio-kicker{margin-top:12px;font-size:12px;font-weight:800;letter-spacing:3px;
+       text-transform:uppercase;color:var(--gold)}
+  .campio-nom{font-size:clamp(40px,12vw,56px);font-weight:900;margin:4px 0 2px;line-height:1.02;
+       background:linear-gradient(92deg,#fff,#ffe9a8 45%,var(--gold));
+       -webkit-background-clip:text;background-clip:text;color:transparent;
+       text-shadow:0 2px 34px #ffd16633}
+  .campio-sub{color:var(--muted);font-size:14.5px;margin-bottom:18px}
+  .campio-msg{font-size:14.5px;line-height:1.55;color:var(--txt);text-align:left;
+       background:#ffffff08;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0 0 18px}
+  .campio-msg b{color:var(--accent)}
+  .campio-stats{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-bottom:22px}
+  .campio-stats .cst{background:var(--card2);border:1px solid var(--line);border-radius:12px;
+       padding:8px 14px;min-width:64px}
+  .campio-stats .cst b{display:block;font-size:22px;color:var(--gold);line-height:1.15}
+  .campio-stats .cst small{color:var(--muted);font-size:11px}
+  .campio-btn{background:linear-gradient(135deg,var(--accent),#2bb87f);color:#06281c;
+       border:none;border-radius:12px;padding:12px 26px;font-size:15px;font-weight:800;
+       cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 8px 24px #3ddc9744}
+  .campio-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px #3ddc9766}
+  .campio-podi{color:var(--muted);font-size:13px;margin-top:16px}
+  .campio-podi b{color:var(--txt)}
+  .confeti{position:fixed;top:-14px;width:9px;height:15px;z-index:1001;border-radius:2px;
+       pointer-events:none;will-change:transform;animation:cfall linear forwards}
+  @keyframes cfall{to{transform:translateY(106vh) rotate(760deg);opacity:.85}}
+  #campio-reobre{position:fixed;right:16px;bottom:16px;z-index:900;display:none;
+       align-items:center;gap:7px;background:linear-gradient(135deg,var(--gold),#e0a92e);
+       color:#3a2c00;border:none;border-radius:999px;padding:11px 16px;font-size:13.5px;
+       font-weight:800;cursor:pointer;box-shadow:0 8px 24px #0007,0 0 0 1px #ffffff22 inset;
+       transition:transform .15s,box-shadow .15s;animation:reobrepop .5s ease}
+  #campio-reobre:hover{transform:translateY(-2px);box-shadow:0 12px 30px #000a}
+  @keyframes reobrepop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+  @media(max-width:520px){#campio-reobre span{display:none}#campio-reobre{padding:12px 14px;font-size:17px}}
 </style>
 </head>
 <body>
@@ -512,6 +595,9 @@ PLANTILLA = r"""<!DOCTYPE html>
   <div class="panel" id="eliminatories"></div>
   <div class="panel" id="partits"></div>
 </div>
+
+<div id="campio-overlay"><div class="campio-card" id="campio-card"></div></div>
+<button id="campio-reobre" title="Tornar a veure el campió">🏆 <span>Veure el campió</span></button>
 
 <script>
 const DATA = /*__DADES__*/;
@@ -1000,6 +1086,114 @@ renderPropers();
 renderGrups();
 renderEliminatories();
 renderPartits();
+
+// ================= CELEBRACIÓ DEL GUANYADOR =================
+// S'obre automàticament a partir del 20/07/2026 a les 23:00 (fi del Mundial).
+// Per provar-ho abans, obre amb ?campio a la URL. Un cop tancada durant la
+// sessió no torna a saltar sola, però queda el botó flotant "🏆 Campió" per
+// tornar-la a veure sempre que es vulgui.
+(function(){
+  const overlay = document.getElementById('campio-overlay');
+  const card = document.getElementById('campio-card');
+  const TRIGGER = new Date(2026, 6, 20, 23, 0, 0);   // 20 juliol 2026, 23:00 (mes 0-indexat)
+  const forcada = /(\?|&)campio\b/.test(location.search) || location.hash === '#campio';
+  const disponible = forcada || (new Date() >= TRIGGER);
+  const podi = DATA.classificacio;              // ja ve ordenada per punts
+  const campio = podi[0];
+  if(!campio) return;
+  const fotos = DATA.fotos || {};
+
+  // Text i mote personalitzats per jugador. Si un jugador no hi és, s'usa un
+  // missatge genèric (però igualment amb la invitació a sopar).
+  const EXTRA = {
+    Pablo: {
+      mote: "🍑 L'Oracle de les Bresquilles",
+      msg: `Vingut des de <b>València</b>, el que menys futbol mira de tots i, `
+         + `tot i així, el que millor endevina els resultats. Un do tan misteriós `
+         + `que ja té nom propi: <b>«L'Oracle de les Bresquilles»</b>. 🎉`,
+    },
+  };
+  const extra = EXTRA[campio.jugador] || {
+    mote: "",
+    msg: `Després de <b>${DATA.partits.length}</b> partits, <b>${campio.jugador}</b> `
+       + `s'ha coronat <b>Campió de la Porra Mundial 2026</b>. I com mana la tradició, `
+       + `la resta et convidem a <b>sopar</b> per celebrar-ho. Ben merescut! 🍽️🎉`,
+  };
+
+  function buildCard(){
+    const stat = (v,l) => `<div class="cst"><b>${v}</b><small>${l}</small></div>`;
+    const seg = podi.slice(1,3).map((r,i)=>`${['🥈','🥉'][i]} <b>${r.jugador}</b> (${r.punts})`).join(' · ');
+    const foto = fotos[campio.jugador];
+    const fotoHtml = foto ? `
+      <div class="campio-foto">
+        <img src="${foto}" alt="${campio.jugador}">
+        <span class="espurna e1">✨</span><span class="espurna e2">✨</span><span class="espurna e3">⭐</span>
+      </div>` : `<div class="campio-trophy">🏆</div>`;
+    card.innerHTML = `
+      <button class="campio-close" id="campio-close" title="Tancar">✕</button>
+      ${fotoHtml}
+      <div class="campio-kicker">Campió de la Porra 2026</div>
+      <div class="campio-nom">${campio.jugador}</div>
+      ${extra.mote?`<div class="campio-mote">${extra.mote}</div>`:''}
+      <div class="campio-sub">Mundial FIFA 2026 · 11 juny – 19 juliol</div>
+      <div class="campio-msg">${extra.msg}</div>
+      <div class="campio-stats">
+        ${stat(campio.punts,'punts')}
+        ${stat(campio.exactes,'exactes')}
+        ${stat(campio.guanyadors,'1X2')}
+        ${stat(campio.grups_ok,'grups OK')}
+      </div>
+      <button class="campio-btn" id="campio-ok">Veure la classificació final</button>
+      ${seg?`<div class="campio-podi">Al podi: ${seg}</div>`:''}`;
+    document.getElementById('campio-close').onclick = tanca;
+    document.getElementById('campio-ok').onclick = tanca;
+  }
+
+  let confetiTimer = null;
+  const COLORS = ['#ffd166','#3ddc97','#ff6b6b','#4d96ff','#ffffff','#c77dff'];
+  function llancaConfeti(){
+    let n = 0;
+    confetiTimer = setInterval(()=>{
+      for(let k=0;k<6;k++){
+        const c = document.createElement('div');
+        c.className = 'confeti';
+        c.style.left = Math.random()*100 + 'vw';
+        c.style.background = COLORS[(Math.random()*COLORS.length)|0];
+        const dur = 3 + Math.random()*2.5;
+        c.style.animationDuration = dur + 's';
+        c.style.opacity = 0.7 + Math.random()*0.3;
+        if(Math.random()<0.5) c.style.borderRadius = '50%';
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(), dur*1000+200);
+      }
+      if(++n > 22){ clearInterval(confetiTimer); confetiTimer=null; }  // ~4s de pluja
+    }, 180);
+  }
+
+  function obre(){
+    buildCard();
+    overlay.classList.add('show');
+    llancaConfeti();
+  }
+  function tanca(){
+    overlay.classList.remove('show');
+    if(confetiTimer){ clearInterval(confetiTimer); confetiTimer=null; }
+    try{ sessionStorage.setItem('campio_vist','1'); }catch(e){}
+  }
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) tanca(); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && overlay.classList.contains('show')) tanca(); });
+
+  // Botó flotant per tornar a veure la celebració (visible només un cop disponible).
+  const reobrir = document.getElementById('campio-reobre');
+  if(disponible && reobrir){
+    reobrir.style.display = 'inline-flex';
+    reobrir.onclick = obre;
+  }
+
+  let jaVist = false;
+  try{ jaVist = sessionStorage.getItem('campio_vist')==='1'; }catch(e){}
+  if(disponible && (forcada || !jaVist)) setTimeout(obre, forcada?200:700);
+})();
 </script>
 </body>
 </html>"""
