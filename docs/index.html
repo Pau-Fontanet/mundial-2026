@@ -749,14 +749,14 @@ renderEliminatories();
 renderPartits();
 
 // ================= CELEBRACIÓ DEL GUANYADOR =================
-// S'obre automàticament a partir del 20/07/2026 a les 23:00 (fi del Mundial).
+// S'obre automàticament a partir del 19/07/2026 a les 23:00 (final del Mundial).
 // Per provar-ho abans, obre amb ?campio a la URL. Un cop tancada durant la
 // sessió no torna a saltar sola, però queda el botó flotant "🏆 Campió" per
 // tornar-la a veure sempre que es vulgui.
 (function(){
   const overlay = document.getElementById('campio-overlay');
   const card = document.getElementById('campio-card');
-  const TRIGGER = new Date(2026, 6, 20, 23, 0, 0);   // 20 juliol 2026, 23:00 (mes 0-indexat)
+  const TRIGGER = new Date(2026, 6, 19, 23, 0, 0);   // 19 juliol 2026, 23:00 (mes 0-indexat)
   const forcada = /(\?|&)campio\b/.test(location.search) || location.hash === '#campio';
   const disponible = forcada || (new Date() >= TRIGGER);
   const podi = DATA.classificacio;              // ja ve ordenada per punts
